@@ -1,10 +1,9 @@
 import { useRef } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { modalState } from '../recoil/modalState';
-import { arrayUnion, doc, setDoc } from 'firebase/firestore';
-import { db } from '../utils/firebase';
 import './TodoModal.css';
 import { loginState } from '../recoil/loginState';
+import { addTodo } from '../utils/firebase';
 
 export default function TodoModal() {
   const setShowModal = useSetRecoilState(modalState);
@@ -17,18 +16,7 @@ export default function TodoModal() {
       return;
     }
 
-    const todoRef = doc(db, loginData.uid, '20230314');
-
-    setDoc(
-      todoRef,
-      {
-        subjects: arrayUnion({
-          subject: subjectRef.current.value,
-          isCompleted: false,
-        }),
-      },
-      { merge: true }
-    );
+    addTodo(loginData.uid, new Date('2023-03-13'), subjectRef.current.value);
   };
 
   return (

@@ -21,6 +21,7 @@ export default function Login() {
         passwordRef.current.value
       );
       setLoginState({ isLogin: true, uid: userCredential.user.uid });
+      window.sessionStorage.setItem('uid', userCredential.user.uid);
       navigate('/');
     } catch (error) {
       console.log(error);

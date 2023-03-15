@@ -1,6 +1,15 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { addDoc, collection, getFirestore, onSnapshot, query, QuerySnapshot, Timestamp, where } from 'firebase/firestore';
+import {
+  addDoc,
+  collection,
+  getFirestore,
+  onSnapshot,
+  query,
+  QuerySnapshot,
+  Timestamp,
+  where,
+} from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -15,17 +24,19 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 
-export async function addTodo(uid: string, date: Date, subject: string) {
-  const docRef = await addDoc(collection(db, uid), {
+export function addTodo(uid: string, date: Date, subject: string) {
+  return addDoc(collection(db, uid), {
     subject,
     date: Timestamp.fromDate(date),
     isCompleted: false,
-  })
-  console.log("Document written with ID: ", docRef.id);
+  });
 }
 
-export function subscribeTodoData(uid: string, callBack: (querySnapShot: QuerySnapshot) => void) {
+export function subscribeTodoData(
+  uid: string,
+  callBack: (querySnapShot: QuerySnapshot) => void
+) {
   const sDate = Timestamp.fromDate(new Date('2023-03-13'));
-  const q = query(collection(db, uid), where("date", ">=", sDate));
+  const q = query(collection(db, uid), where('date', '>=', sDate));
   return onSnapshot(q, callBack);
 }

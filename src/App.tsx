@@ -2,7 +2,8 @@ import { Container, CssBaseline, Stack } from '@mui/material';
 import { useLayoutEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useSetRecoilState } from 'recoil';
-import Day from './components/Day';
+import AddModal from './components/AddModal';
+import DayBox from './components/DayBox';
 import WeekTitle from './components/WeekTitle';
 import useTodo from './hooks/useTodo';
 import { loginState } from './recoil/loginState';
@@ -35,28 +36,12 @@ function App() {
       <Container maxWidth="xl">
         <WeekTitle />
         <Stack direction="row" spacing={2}>
-          <Day />
-          <Day />
-          <Day />
-          <Day />
-          <Day />
-          <Day />
-          <Day />
+          {todoListsByDate.map((todos, i) => (
+            <DayBox key={i} date={todos.date} list={todos.list} />
+          ))}
         </Stack>
-        {todoListsByDate.map((todos, i) => (
-          <div key={i}>
-            <h2>{todos.date.toISOString()}</h2>
-            <ul>
-              {todos.list.map((todo) => (
-                <li key={todo.id}>
-                  <span>{todo.subject}</span>
-                  <button>{todo.isCompleted.toString()}</button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
       </Container>
+      <AddModal />
     </>
   );
 }

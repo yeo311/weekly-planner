@@ -10,3 +10,5 @@ export function getThisWeekDateArray() {
   );
   return thisWeekDateArray;
 }
+
+export const dayArr = ['일', '월', '화', '수', '목', '금', '토'];

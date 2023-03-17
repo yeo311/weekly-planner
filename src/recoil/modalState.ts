@@ -1,6 +1,14 @@
 import { atom } from 'recoil';
 
-export const modalState = atom<boolean>({
-  key: 'modalState',
-  default: false,
+interface AddModalState {
+  isShowModal: boolean;
+  targetDate: Date;
+}
+
+export const addModalState = atom<AddModalState>({
+  key: 'addModalState',
+  default: {
+    isShowModal: false,
+    targetDate: new Date(),
+  },
 });

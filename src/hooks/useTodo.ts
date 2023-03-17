@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { loginState } from '../recoil/loginState';
-import { Todo, todoListsByDateState, todoListState } from '../recoil/todoList';
+import { todoListsByDateState, todoListState } from '../recoil/todoList';
 import { subscribeTodoData } from '../utils/firebase';
+import { Todo } from '../types/todo';
 
 export default function useTodo() {
   const loginData = useRecoilValue(loginState);

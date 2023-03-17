@@ -1,12 +1,6 @@
 import { atom, selector } from 'recoil';
 import { thisWeekState } from './thisWeekState';
-
-export interface Todo {
-  id: string;
-  date: Date;
-  subject: string;
-  isCompleted: boolean;
-}
+import { Todo } from '../types/todo';
 
 export interface TodoByDate {
   date: Date;

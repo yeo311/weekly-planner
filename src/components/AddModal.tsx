@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
+import useTodo from '../hooks/useTodo';
 import { loginState } from '../recoil/loginState';
 import { addModalState } from '../recoil/modalState';
 import { addTodo } from '../utils/firebase';
@@ -21,6 +22,7 @@ const AddModal = () => {
   const closeModal = () => {
     setModalState((prev) => ({ ...prev, isShowModal: false }));
   };
+  const { fetchTodos } = useTodo();
 
   const loginData = useRecoilValue(loginState);
 
@@ -34,6 +36,7 @@ const AddModal = () => {
       await addTodo(loginData.uid, modalState.targetDate, value);
       setIsLoading(false);
       closeModal();
+      fetchTodos(modalState.targetDate);
     } catch (e) {
       console.error(e);
       window.alert('에러가 발생했습니다');

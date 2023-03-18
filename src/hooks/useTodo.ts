@@ -1,35 +1,31 @@
-import { useEffect } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { loginState } from '../recoil/loginState';
-import { todoListsByDateState, todoListState } from '../recoil/todoList';
-import { subscribeTodoData } from '../utils/firebase';
+import { todoListState } from '../recoil/todoList';
+import { getFireBaseTodosByDate } from '../utils/firebase';
 import { Todo } from '../types/todo';
 
 export default function useTodo() {
-  const loginData = useRecoilValue(loginState);
-  const [todoList, setTodoList] = useRecoilState(todoListState);
-  const todoListsByDate = useRecoilValue(todoListsByDateState);
+  const { uid } = useRecoilValue(loginState);
+  const [todos, setTodos] = useRecoilState(todoListState);
 
-  useEffect(() => {
-    if (!loginData.uid) return;
-    const unSub = subscribeTodoData(loginData.uid, (querySnapshot) => {
-      const todos: Todo[] = [];
-      querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        todos.push({
-          subject: data.subject,
-          date: data.date.toDate(),
-          isCompleted: data.isCompleted,
-          id: doc.id,
-        });
+  const fetchTodos = async (date: Date) => {
+    const querySnapshot = await getFireBaseTodosByDate(uid, date);
+    const dayTodos: Todo[] = [];
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      dayTodos.push({
+        subject: data.subject,
+        date: data.date.toDate(),
+        isCompleted: data.isCompleted,
+        id: doc.id,
       });
-      setTodoList(todos);
     });
+    setTodos((prevTodos) => ({ ...prevTodos, [date.getTime()]: dayTodos }));
+  };
 
-    return () => {
-      unSub();
-    };
-  }, [loginData]);
+  const getTodos = (date: Date) => {
+    return todos[date.getTime()];
+  };
 
-  return { todoList, todoListsByDate };
+  return { getTodos, fetchTodos };
 }

@@ -4,10 +4,9 @@ import {
   addDoc,
   collection,
   doc,
+  getDocs,
   getFirestore,
-  onSnapshot,
   query,
-  QuerySnapshot,
   Timestamp,
   updateDoc,
   where,
@@ -34,17 +33,14 @@ export function addTodo(uid: string, date: Date, subject: string) {
   });
 }
 
-export function subscribeTodoData(
-  uid: string,
-  callBack: (querySnapShot: QuerySnapshot) => void
-) {
-  const sDate = Timestamp.fromDate(new Date('2023-03-13'));
-  const q = query(collection(db, uid), where('date', '>=', sDate));
-  return onSnapshot(q, callBack);
-}
-
 export function updateTodo(uid: string, todoId: string, isCompleted: boolean) {
   return updateDoc(doc(db, uid, todoId), {
     isCompleted,
   });
+}
+
+export function getFireBaseTodosByDate(uid: string, date: Date) {
+  return getDocs(
+    query(collection(db, uid), where('date', '==', Timestamp.fromDate(date)))
+  );
 }

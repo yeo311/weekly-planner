@@ -1,11 +1,10 @@
 import { Container, CssBaseline, Stack } from '@mui/material';
 import { useLayoutEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 import AddModal from './components/AddModal';
 import DayBox from './components/DayBox';
 import WeekTitle from './components/WeekTitle';
-import useTodo from './hooks/useTodo';
 import { loginState } from './recoil/loginState';
 import { thisWeekState } from './recoil/thisWeekState';
 import { getThisWeekDateArray } from './utils/date';
@@ -13,8 +12,7 @@ import { getThisWeekDateArray } from './utils/date';
 function App() {
   const navigate = useNavigate();
   const [loginData, setLoginData] = useRecoilState(loginState);
-  const { todoListsByDate } = useTodo();
-  const setThisWeek = useSetRecoilState(thisWeekState);
+  const [thisWeek, setThisWeek] = useRecoilState(thisWeekState);
 
   useLayoutEffect(() => {
     if (loginData.isLogin) return;
@@ -36,8 +34,8 @@ function App() {
       <Container maxWidth="xl">
         <WeekTitle />
         <Stack direction="row" spacing={2}>
-          {todoListsByDate.map((todos, i) => (
-            <DayBox key={i} date={todos.date} list={todos.list} />
+          {thisWeek.map((date, i) => (
+            <DayBox key={i} date={date} />
           ))}
         </Stack>
       </Container>

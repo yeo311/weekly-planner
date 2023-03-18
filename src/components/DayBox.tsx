@@ -1,22 +1,28 @@
 import { IconButton, Paper, Stack, Typography } from '@mui/material';
-import { Todo } from '../types/todo';
 import { dayArr } from '../utils/date';
-import TodoItem from './TodoItem';
 import AddIcon from '@mui/icons-material/Add';
 import { useSetRecoilState } from 'recoil';
 import { addModalState } from '../recoil/modalState';
+import useTodo from '../hooks/useTodo';
+import { useEffect } from 'react';
+import TodoItem from './TodoItem';
 
 interface DayProps {
   date: Date;
-  list: Todo[];
 }
 
-const DayBox = ({ date, list }: DayProps) => {
+const DayBox = ({ date }: DayProps) => {
   const setModalState = useSetRecoilState(addModalState);
+  const { getTodos, fetchTodos } = useTodo();
 
   const handleClickAddButton = () => {
     setModalState({ isShowModal: true, targetDate: date });
   };
+
+  useEffect(() => {
+    if (getTodos(date)) return;
+    fetchTodos(date);
+  }, [date, getTodos, fetchTodos]);
 
   return (
     <Paper elevation={3} sx={{ padding: '10px', width: '200px' }}>
@@ -28,7 +34,7 @@ const DayBox = ({ date, list }: DayProps) => {
         </IconButton>
       </Stack>
       <Stack>
-        {list.map((todo) => (
+        {getTodos(date)?.map((todo) => (
           <TodoItem key={todo.id} todo={todo} />
         ))}
       </Stack>

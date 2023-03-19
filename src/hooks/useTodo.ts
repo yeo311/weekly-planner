@@ -1,6 +1,6 @@
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { loginState } from '../recoil/loginState';
-import { todoListState } from '../recoil/todoList';
+import { userState } from '../recoil/user';
+import { todoListState } from '../recoil/todo';
 import {
   getFireBaseTodosByDate,
   updateFirebaseTodoItem,
@@ -8,10 +8,11 @@ import {
 import { Todo } from '../types/todo';
 
 export default function useTodo() {
-  const { uid } = useRecoilValue(loginState);
+  const { uid } = useRecoilValue(userState);
   const [todos, setTodos] = useRecoilState(todoListState);
 
   const fetchTodos = async (date: Date) => {
+    if (!uid) return;
     const querySnapshot = await getFireBaseTodosByDate(uid, date);
     const dayTodos: Todo[] = [];
     querySnapshot.forEach((doc) => {

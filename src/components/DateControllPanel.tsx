@@ -4,14 +4,15 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import TodayIcon from '@mui/icons-material/Today';
 import { blue } from '@mui/material/colors';
 import { useRecoilState } from 'recoil';
-import { thisWeekState } from '../recoil/thisWeekState';
+import { currentDateState } from '../recoil/date';
 
-const WeekTitle = () => {
-  const [thisWeek, setThisWeek] = useRecoilState(thisWeekState);
+const DateControllPanel = () => {
+  const [currentDate, setCurrentDate] = useRecoilState(currentDateState);
 
   const moveWeek = (moveDateCount: number) => {
-    setThisWeek((prev) =>
-      prev.map((date) => new Date(date.setDate(date.getDate() + moveDateCount)))
+    setCurrentDate(
+      (prevDate) =>
+        new Date(prevDate.getTime() + moveDateCount * 24 * 60 * 60 * 1000)
     );
   };
 
@@ -24,13 +25,11 @@ const WeekTitle = () => {
       <IconButton aria-label="forward" onClick={() => moveWeek(7)}>
         <ArrowForwardIosIcon />
       </IconButton>
-      {!!thisWeek.length && (
-        <Typography variant="h6">{`${thisWeek[0].getFullYear()}년 ${
-          thisWeek[0].getMonth() + 1
-        }월`}</Typography>
-      )}
+      <Typography variant="h6">{`${currentDate.getFullYear()}년 ${
+        currentDate.getMonth() + 1
+      }월`}</Typography>
     </Stack>
   );
 };
 
-export default WeekTitle;
+export default DateControllPanel;

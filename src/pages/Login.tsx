@@ -10,11 +10,11 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
-import { loginState } from './recoil/loginState';
-import { auth } from './utils/firebase';
+import { userState } from '../recoil/user';
+import { auth } from '../utils/firebase';
 
 export default function Login() {
-  const setLoginState = useSetRecoilState(loginState);
+  const setLoginState = useSetRecoilState(userState);
   const navigate = useNavigate();
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');

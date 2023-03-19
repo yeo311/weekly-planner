@@ -10,8 +10,8 @@ import {
 import { useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import useTodo from '../hooks/useTodo';
-import { loginState } from '../recoil/loginState';
-import { addModalState } from '../recoil/modalState';
+import { userState } from '../recoil/user';
+import { addModalState } from '../recoil/modal';
 import { addTodo } from '../utils/firebase';
 
 const AddModal = () => {
@@ -24,7 +24,7 @@ const AddModal = () => {
   };
   const { fetchTodos } = useTodo();
 
-  const loginData = useRecoilValue(loginState);
+  const loginData = useRecoilValue(userState);
 
   const handleClickSubmit = async () => {
     if (!value) {

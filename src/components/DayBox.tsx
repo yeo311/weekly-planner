@@ -2,7 +2,7 @@ import { IconButton, Paper, Stack, Typography } from '@mui/material';
 import { dayArr } from '../utils/date';
 import AddIcon from '@mui/icons-material/Add';
 import { useSetRecoilState } from 'recoil';
-import { addModalState } from '../recoil/modalState';
+import { addModalState } from '../recoil/modal';
 import useTodo from '../hooks/useTodo';
 import { useEffect } from 'react';
 import TodoItem from './TodoItem';

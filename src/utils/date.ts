@@ -1,5 +1,7 @@
-export function getThisWeekDateArray() {
-  const currentDay = new Date();
+export function getThisWeekDateArray(date?: Date) {
+  const currentDay = date
+    ? new Date(date.getFullYear(), date.getMonth(), date.getDate())
+    : new Date();
   const thisYear = currentDay.getFullYear();
   const thisMonth = currentDay.getMonth();
   const thisDate = currentDay.getDate();

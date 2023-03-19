@@ -33,7 +33,11 @@ export function addTodo(uid: string, date: Date, subject: string) {
   });
 }
 
-export function updateTodo(uid: string, todoId: string, isCompleted: boolean) {
+export function updateFirebaseTodoItem(
+  uid: string,
+  todoId: string,
+  isCompleted: boolean
+) {
   return updateDoc(doc(db, uid, todoId), {
     isCompleted,
   });

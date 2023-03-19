@@ -1,7 +1,10 @@
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { loginState } from '../recoil/loginState';
 import { todoListState } from '../recoil/todoList';
-import { getFireBaseTodosByDate } from '../utils/firebase';
+import {
+  getFireBaseTodosByDate,
+  updateFirebaseTodoItem,
+} from '../utils/firebase';
 import { Todo } from '../types/todo';
 
 export default function useTodo() {
@@ -27,5 +30,9 @@ export default function useTodo() {
     return todos[date.getTime()];
   };
 
-  return { getTodos, fetchTodos };
+  const updateIsCompleted = (todoId: string, isCompleted: boolean) => {
+    return updateFirebaseTodoItem(uid, todoId, isCompleted);
+  };
+
+  return { getTodos, fetchTodos, updateIsCompleted };
 }

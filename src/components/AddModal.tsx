@@ -6,25 +6,39 @@ import {
   Button,
   Alert,
   CircularProgress,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  SelectChangeEvent,
 } from '@mui/material';
 import { useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import useTodo from '../hooks/useTodo';
 import { userState } from '../recoil/user';
 import { addModalState } from '../recoil/modal';
-import { addTodo } from '../utils/firebase';
+import { addFirebaseTodo } from '../utils/firebase';
+import { RepeatingTypes } from '../types/todo';
+import { dayArr } from '../utils/date';
 
 const AddModal = () => {
   const [modalState, setModalState] = useRecoilState(addModalState);
   const [value, setValue] = useState<string>('');
   const [showError, setShowError] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [repeatingType, setRepeatingType] = useState<RepeatingTypes | 'none'>(
+    'none'
+  );
   const closeModal = () => {
     setModalState((prev) => ({ ...prev, isShowModal: false }));
   };
   const { fetchTodos } = useTodo();
 
   const loginData = useRecoilValue(userState);
+
+  const handleRepeatingTypeChange = (event: SelectChangeEvent) => {
+    setRepeatingType(event.target.value as RepeatingTypes);
+  };
 
   const handleClickSubmit = async () => {
     if (!value) {
@@ -33,7 +47,7 @@ const AddModal = () => {
     }
     try {
       setIsLoading(true);
-      await addTodo(loginData.uid, modalState.targetDate, value);
+      await addFirebaseTodo(loginData.uid, modalState.targetDate, value);
       setIsLoading(false);
       closeModal();
       fetchTodos(modalState.targetDate);
@@ -74,6 +88,26 @@ const AddModal = () => {
             <Box sx={{ height: 20 }} />
           </>
         )}
+        <FormControl variant="standard">
+          <InputLabel id="repeating-type">반복</InputLabel>
+          <Select
+            labelId="repeating-type"
+            label="repeat"
+            value={repeatingType}
+            onChange={handleRepeatingTypeChange}
+          >
+            <MenuItem value="none">반복 안함</MenuItem>
+            <MenuItem value="weekly">
+              매주 {`${dayArr[modalState.targetDate.getDay()]}요일`}
+            </MenuItem>
+            <MenuItem value="daily">매일</MenuItem>
+            <MenuItem value="weekdays">주중 매일</MenuItem>
+            <MenuItem value="monthly">
+              매달 {`${modalState.targetDate.getDate()}일`}
+            </MenuItem>
+          </Select>
+        </FormControl>
+        <Box sx={{ height: 20 }} />
         <Button
           variant="contained"
           sx={{ alignSelf: 'flex-end' }}

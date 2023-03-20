@@ -11,6 +11,7 @@ import {
   updateDoc,
   where,
 } from 'firebase/firestore';
+import { RepeatingTypes } from '../types/todo';
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -25,7 +26,7 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 
-export function addTodo(uid: string, date: Date, subject: string) {
+export function addFirebaseTodo(uid: string, date: Date, subject: string) {
   return addDoc(collection(db, uid), {
     subject,
     date: Timestamp.fromDate(date),
@@ -46,5 +47,34 @@ export function updateFirebaseTodoItem(
 export function getFireBaseTodosByDate(uid: string, date: Date) {
   return getDocs(
     query(collection(db, uid), where('date', '==', Timestamp.fromDate(date)))
+  );
+}
+
+export function addFirebaseRepetitiveTodo(
+  uid: string,
+  startDate: Date,
+  endDate: Date,
+  repeatingType: RepeatingTypes,
+  repeatingNumber: number,
+  subject: string
+) {
+  return addDoc(collection(db, `${uid}_repeat`), {
+    startDate: Timestamp.fromDate(startDate),
+    endDate: Timestamp.fromDate(endDate),
+    repeatingType,
+    repeatingNumber,
+    subject,
+    completedDates: [],
+  });
+}
+
+export function getFirebaseRepetitiveTodosByDate(uid: string, date: Date) {
+  const dateToTimestamp = Timestamp.fromDate(date);
+  return getDocs(
+    query(
+      collection(db, `${uid}_repeat`),
+      where('startDate', '<=', dateToTimestamp),
+      where('endDate', '>=', dateToTimestamp)
+    )
   );
 }

@@ -55,12 +55,12 @@ export function addFirebaseRepetitiveTodo(
   startDate: Date,
   endDate: Date,
   repeatingType: RepeatingTypes,
-  repeatingNumber: number,
+  repeatingNumber: number | null,
   subject: string
 ) {
   return addDoc(collection(db, `${uid}_repeat`), {
     startDate: Timestamp.fromDate(startDate),
-    endDate: Timestamp.fromDate(endDate),
+    endDate: endDate ? Timestamp.fromDate(endDate) : null,
     repeatingType,
     repeatingNumber,
     subject,
@@ -73,7 +73,6 @@ export function getFirebaseRepetitiveTodosByDate(uid: string, date: Date) {
   return getDocs(
     query(
       collection(db, `${uid}_repeat`),
-      where('startDate', '<=', dateToTimestamp),
       where('endDate', '>=', dateToTimestamp)
     )
   );

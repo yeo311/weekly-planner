@@ -3,9 +3,15 @@ export interface Todo {
   date: Date;
   subject: string;
   isCompleted: boolean;
+  repeatingType: RepeatingTypes;
 }
 
-export type RepeatingTypes = 'weekly' | 'daily' | 'weekdays' | 'monthly';
+export type RepeatingTypes =
+  | 'single'
+  | 'weekly'
+  | 'daily'
+  | 'weekdays'
+  | 'monthly';
 
 export interface RepetitiveTodo {
   id: string;

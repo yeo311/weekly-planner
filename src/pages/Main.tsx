@@ -7,6 +7,8 @@ import DayBox from '../components/DayBox';
 import DateControllPanel from '../components/DateControllPanel';
 import { userState } from '../recoil/user';
 import { currentWeekDaysState } from '../recoil/date';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 function Main() {
   const navigate = useNavigate();
@@ -26,15 +28,17 @@ function Main() {
   return (
     <>
       <CssBaseline />
-      <Container maxWidth="xl">
-        <DateControllPanel />
-        <Stack direction="row" spacing={2}>
-          {currentWeekDays.map((date, i) => (
-            <DayBox key={i} date={date} />
-          ))}
-        </Stack>
-      </Container>
-      <AddModal />
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <Container maxWidth="xl">
+          <DateControllPanel />
+          <Stack direction="row" spacing={2}>
+            {currentWeekDays.map((date, i) => (
+              <DayBox key={i} date={date} />
+            ))}
+          </Stack>
+        </Container>
+        <AddModal />
+      </LocalizationProvider>
     </>
   );
 }

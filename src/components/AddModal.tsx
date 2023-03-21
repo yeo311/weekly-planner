@@ -17,9 +17,14 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import useTodo from '../hooks/useTodo';
 import { userState } from '../recoil/user';
 import { addModalState } from '../recoil/modal';
-import { addFirebaseTodo } from '../utils/firebase';
+import { addFirebaseRepetitiveTodo, addFirebaseTodo } from '../utils/firebase';
 import { RepeatingTypes } from '../types/todo';
 import { dayArr } from '../utils/date';
+import { MobileDatePicker } from '@mui/x-date-pickers';
+import MarginBox from './MarginBox';
+import dayjs, { Dayjs } from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+dayjs.extend(utc);
 
 const AddModal = () => {
   const [modalState, setModalState] = useRecoilState(addModalState);
@@ -29,6 +34,8 @@ const AddModal = () => {
   const [repeatingType, setRepeatingType] = useState<RepeatingTypes | 'none'>(
     'none'
   );
+  const [endDate, setEndDate] = useState<Dayjs | null>(null);
+
   const closeModal = () => {
     setModalState((prev) => ({ ...prev, isShowModal: false }));
   };
@@ -47,7 +54,24 @@ const AddModal = () => {
     }
     try {
       setIsLoading(true);
-      await addFirebaseTodo(loginData.uid, modalState.targetDate, value);
+      if (repeatingType === 'none') {
+        await addFirebaseTodo(loginData.uid, modalState.targetDate, value);
+      } else {
+        const repeatingNumber =
+          repeatingType === 'monthly'
+            ? modalState.targetDate.getDate()
+            : repeatingType === 'weekly'
+            ? modalState.targetDate.getDay()
+            : null;
+        await addFirebaseRepetitiveTodo(
+          loginData.uid,
+          modalState.targetDate,
+          endDate ? endDate.utc(true).toDate() : new Date('2099-12-31'),
+          repeatingType,
+          repeatingNumber,
+          value
+        );
+      }
       setIsLoading(false);
       closeModal();
       fetchTodos(modalState.targetDate);
@@ -81,13 +105,7 @@ const AddModal = () => {
           fullWidth
           onChange={(e) => setValue(e.target.value)}
         />
-        <Box sx={{ height: 20 }} />
-        {showError && (
-          <>
-            <Alert severity="error">할일을 입력하세요.</Alert>
-            <Box sx={{ height: 20 }} />
-          </>
-        )}
+        <MarginBox />
         <FormControl variant="standard">
           <InputLabel id="repeating-type">반복</InputLabel>
           <Select
@@ -107,7 +125,20 @@ const AddModal = () => {
             </MenuItem>
           </Select>
         </FormControl>
-        <Box sx={{ height: 20 }} />
+        <MarginBox />
+        <MobileDatePicker
+          label="종료일 (선택 하지 않으면 계속 반복)"
+          sx={{ display: repeatingType === 'none' ? 'none' : 'box' }}
+          value={endDate}
+          onChange={(newValue) => setEndDate(newValue)}
+        />
+        <MarginBox />
+        {showError && (
+          <>
+            <Alert severity="error">할일을 입력하세요.</Alert>
+            <MarginBox />
+          </>
+        )}
         <Button
           variant="contained"
           sx={{ alignSelf: 'flex-end' }}

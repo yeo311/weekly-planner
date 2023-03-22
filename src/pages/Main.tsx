@@ -9,6 +9,7 @@ import { userState } from '../recoil/user';
 import { currentWeekDaysState } from '../recoil/date';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import DeleteDialog from '../components/DeleteDialog';
 
 function Main() {
   const navigate = useNavigate();
@@ -38,6 +39,7 @@ function Main() {
           </Stack>
         </Container>
         <AddModal />
+        <DeleteDialog />
       </LocalizationProvider>
     </>
   );

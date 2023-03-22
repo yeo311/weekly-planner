@@ -39,7 +39,7 @@ const AddModal = () => {
   const closeModal = () => {
     setModalState((prev) => ({ ...prev, isShowModal: false }));
   };
-  const { fetchTodos } = useTodo();
+  const { fetchTodos, cleanTodos } = useTodo();
 
   const loginData = useRecoilValue(userState);
 
@@ -56,6 +56,7 @@ const AddModal = () => {
       setIsLoading(true);
       if (repeatingType === 'none') {
         await addFirebaseTodo(loginData.uid, modalState.targetDate, value);
+        fetchTodos(modalState.targetDate);
       } else {
         const repeatingNumber =
           repeatingType === 'monthly'
@@ -71,10 +72,10 @@ const AddModal = () => {
           repeatingNumber,
           value
         );
+        cleanTodos();
       }
       setIsLoading(false);
       closeModal();
-      fetchTodos(modalState.targetDate);
     } catch (e) {
       console.error(e);
       window.alert('에러가 발생했습니다');

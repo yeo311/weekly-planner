@@ -2,7 +2,10 @@ import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import {
   addDoc,
+  arrayRemove,
+  arrayUnion,
   collection,
+  deleteDoc,
   doc,
   getDocs,
   getFirestore,
@@ -11,7 +14,7 @@ import {
   updateDoc,
   where,
 } from 'firebase/firestore';
-import { RepeatingTypes } from '../types/todo';
+import { RepeatingTypes, RepetitiveTodoDeleteTypes, Todo } from '../types/todo';
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -50,6 +53,10 @@ export function getFireBaseTodosByDate(uid: string, date: Date) {
   );
 }
 
+export function deleteFirebaseTodo(uid: string, todoId: string) {
+  return deleteDoc(doc(db, uid, todoId));
+}
+
 export function addFirebaseRepetitiveTodo(
   uid: string,
   startDate: Date,
@@ -65,6 +72,7 @@ export function addFirebaseRepetitiveTodo(
     repeatingNumber,
     subject,
     completedDates: [],
+    deletedDates: [],
   });
 }
 
@@ -76,4 +84,44 @@ export function getFirebaseRepetitiveTodosByDate(uid: string, date: Date) {
       where('endDate', '>=', dateToTimestamp)
     )
   );
+}
+
+export function updateFirebaseRepetitiveTodosIsCompleted(
+  uid: string,
+  todoId: string,
+  isCompleted: boolean,
+  date: Date
+) {
+  const time = date.getTime();
+  return updateDoc(doc(db, `${uid}_repeat`, todoId), {
+    completedDates: isCompleted ? arrayUnion(time) : arrayRemove(time),
+  });
+}
+
+export function deleteFirebaseRepetitiveTodo(
+  uid: string,
+  todo: Todo,
+  repetitiveTodoDeleteType: RepetitiveTodoDeleteTypes
+) {
+  const ref = doc(db, `${uid}_repeat`, todo.id);
+  if (repetitiveTodoDeleteType === 'all') {
+    return deleteDoc(ref);
+  } else if (repetitiveTodoDeleteType === 'after') {
+    const targetDate = new Date(
+      Date.UTC(
+        todo.date.getFullYear(),
+        todo.date.getMonth(),
+        todo.date.getDate()
+      )
+    );
+    targetDate.setDate(targetDate.getDate() - 1);
+    return updateDoc(ref, {
+      endDate: Timestamp.fromDate(targetDate),
+    });
+  }
+  const time = todo.date.getTime();
+  return updateDoc(ref, {
+    completedDates: arrayRemove(time),
+    deletedDates: arrayUnion(time),
+  });
 }

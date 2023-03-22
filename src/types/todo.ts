@@ -13,6 +13,8 @@ export type RepeatingTypes =
   | 'weekdays'
   | 'monthly';
 
+export type RepetitiveTodoDeleteTypes = 'only' | 'after' | 'all';
+
 export interface RepetitiveTodo {
   id: string;
   subject: string;
@@ -20,5 +22,6 @@ export interface RepetitiveTodo {
   endDate: Date;
   repeatingType: RepeatingTypes;
   repeatingNumber: number;
-  completedDates: Date[];
+  completedDates: number[];
+  deletedDates: number[];
 }

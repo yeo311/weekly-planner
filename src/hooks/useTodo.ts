@@ -2,11 +2,14 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { userState } from '../recoil/user';
 import { todoListState } from '../recoil/todo';
 import {
+  deleteFirebaseRepetitiveTodo,
+  deleteFirebaseTodo,
   getFirebaseRepetitiveTodosByDate,
   getFireBaseTodosByDate,
+  updateFirebaseRepetitiveTodosIsCompleted,
   updateFirebaseTodoItem,
 } from '../utils/firebase';
-import { Todo } from '../types/todo';
+import { RepeatingTypes, RepetitiveTodoDeleteTypes, Todo } from '../types/todo';
 
 export default function useTodo() {
   const { uid } = useRecoilValue(userState);
@@ -34,24 +37,32 @@ export default function useTodo() {
 
     repeatitiveTodoQuerySnapshot.forEach((doc) => {
       const data = doc.data();
+
       if (data.startDate.toDate().getTime() > date.getTime()) return;
       if (
         data.repeatingType === 'weekly' &&
         data.repeatingNumber !== date.getDay()
-      )
+      ) {
         return;
+      }
 
       if (
         data.repeatingType === 'monthly' &&
         data.repeatingNumber !== date.getDate()
-      )
+      ) {
         return;
+      }
 
       if (
         data.repeatingType === 'weekdays' &&
         (date.getDay() === 0 || date.getDay() === 6)
-      )
+      ) {
         return;
+      }
+
+      if (!!data.deletedDates && data.deletedDates.includes(date.getTime())) {
+        return;
+      }
 
       dayTodos.push({
         subject: data.subject,
@@ -69,9 +80,36 @@ export default function useTodo() {
     return todos[date.getTime()];
   };
 
-  const updateIsCompleted = (todoId: string, isCompleted: boolean) => {
-    return updateFirebaseTodoItem(uid, todoId, isCompleted);
+  const updateIsCompleted = (
+    todoId: string,
+    isCompleted: boolean,
+    repeatingType: RepeatingTypes,
+    date: Date
+  ) => {
+    if (repeatingType === 'single') {
+      return updateFirebaseTodoItem(uid, todoId, isCompleted);
+    }
+    return updateFirebaseRepetitiveTodosIsCompleted(
+      uid,
+      todoId,
+      isCompleted,
+      date
+    );
   };
 
-  return { getTodos, fetchTodos, updateIsCompleted };
+  const cleanTodos = () => {
+    setTodos({});
+  };
+
+  const deleteTodo = (
+    todo: Todo,
+    repetitiveTodoDeleteType: RepetitiveTodoDeleteTypes
+  ) => {
+    if (todo.repeatingType === 'single') {
+      return deleteFirebaseTodo(uid, todo.id);
+    }
+    return deleteFirebaseRepetitiveTodo(uid, todo, repetitiveTodoDeleteType);
+  };
+
+  return { getTodos, fetchTodos, updateIsCompleted, cleanTodos, deleteTodo };
 }

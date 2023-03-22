@@ -10,11 +10,13 @@ const DateControllPanel = () => {
   const [currentDate, setCurrentDate] = useRecoilState(currentDateState);
 
   const moveWeek = (moveDateCount: number) => {
-    setCurrentDate(
-      (prevDate) =>
-        new Date(prevDate.getTime() + moveDateCount * 24 * 60 * 60 * 1000)
-    );
+    setCurrentDate((prevDate) => {
+      const newDate = prevDate + moveDateCount * 24 * 60 * 60 * 1000;
+      return newDate;
+    });
   };
+
+  const curDate = new Date(currentDate);
 
   return (
     <Stack direction="row" spacing={3} alignItems="center">
@@ -25,8 +27,8 @@ const DateControllPanel = () => {
       <IconButton aria-label="forward" onClick={() => moveWeek(7)}>
         <ArrowForwardIosIcon />
       </IconButton>
-      <Typography variant="h6">{`${currentDate.getFullYear()}년 ${
-        currentDate.getMonth() + 1
+      <Typography variant="h6">{`${curDate.getFullYear()}년 ${
+        curDate.getMonth() + 1
       }월`}</Typography>
     </Stack>
   );

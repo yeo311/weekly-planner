@@ -9,6 +9,7 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
+import { RecoilURLSyncJSON } from 'recoil-sync';
 
 const router = createBrowserRouter([
   {
@@ -19,12 +20,18 @@ const router = createBrowserRouter([
     path: '/login',
     element: <Login />,
   },
+  {
+    path: '/:cur',
+    element: <Main />,
+  },
 ]);
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <RecoilRoot>
-      <RouterProvider router={router} />
+      <RecoilURLSyncJSON location={{ part: 'queryParams' }}>
+        <RouterProvider router={router} />
+      </RecoilURLSyncJSON>
     </RecoilRoot>
   </React.StrictMode>
 );

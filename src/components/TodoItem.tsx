@@ -1,16 +1,9 @@
-import {
-  Checkbox,
-  IconButton,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-} from '@mui/material';
+import { ListItem, ListItemButton, ListItemText } from '@mui/material';
 import useTodo from '../hooks/useTodo';
 import { Todo } from '../types/todo';
-import DeleteIcon from '@mui/icons-material/Delete';
 import { useSetRecoilState } from 'recoil';
 import { deleteDialogState } from '../recoil/modal';
+import { useState } from 'react';
 
 interface TodoItemProps {
   todo: Todo;
@@ -19,6 +12,11 @@ interface TodoItemProps {
 const TodoItem = ({ todo }: TodoItemProps) => {
   const { fetchTodos, updateIsCompleted } = useTodo();
   const setDialog = useSetRecoilState(deleteDialogState);
+  const [mouseDownTime, setMouseDownTime] = useState<number | null>(null);
+
+  const deleteItem = () => {
+    setDialog({ isOpen: true, targetTodo: todo });
+  };
 
   const toggleIsCompleted = () => {
     updateIsCompleted(
@@ -31,35 +29,43 @@ const TodoItem = ({ todo }: TodoItemProps) => {
     });
   };
 
-  const handleClickDeleteBtn = () => {
-    setDialog({ isOpen: true, targetTodo: todo });
+  const handleMouseDown = () => {
+    setMouseDownTime(new Date().getTime());
+  };
+
+  const handleMouseUp = () => {
+    if (mouseDownTime !== null && new Date().getTime() - mouseDownTime >= 500) {
+      deleteItem();
+    } else {
+      toggleIsCompleted();
+    }
   };
 
   const labelId = `todo-item-label-${todo.id}`;
   return (
-    <ListItem
-      disablePadding
-      secondaryAction={
-        <IconButton
-          edge="end"
-          aria-lebel="delete"
-          onClick={handleClickDeleteBtn}
-        >
-          <DeleteIcon />
-        </IconButton>
-      }
-    >
-      <ListItemButton onClick={toggleIsCompleted} dense>
-        <ListItemIcon>
-          <Checkbox
-            edge="start"
-            checked={todo.isCompleted}
-            tabIndex={-1}
-            disableRipple
-            inputProps={{ 'aria-labelledby': labelId }}
-          />
-        </ListItemIcon>
-        <ListItemText id={labelId} primary={todo.subject} />
+    <ListItem disablePadding>
+      <ListItemButton
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+        dense
+        sx={{
+          margin: '2px 0px',
+          padding: '4px 8px',
+          backgroundColor: todo.isCompleted ? '#d5eecf' : '#c4c4c4',
+        }}
+      >
+        <ListItemText
+          id={labelId}
+          primary={todo.subject}
+          sx={{ textDecoration: todo.isCompleted ? 'none' : 'line-through' }}
+          primaryTypographyProps={{
+            sx: {
+              overflow: 'hidden',
+              whiteSpace: 'nowrap',
+              textOverflow: 'ellipsis',
+            },
+          }}
+        />
       </ListItemButton>
     </ListItem>
   );

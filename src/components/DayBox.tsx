@@ -1,4 +1,10 @@
-import { IconButton, List, ListSubheader, Typography } from '@mui/material';
+import {
+  List,
+  ListItem,
+  ListItemButton,
+  ListSubheader,
+  Typography,
+} from '@mui/material';
 import { dayArr } from '../utils/date';
 import AddIcon from '@mui/icons-material/Add';
 import { useSetRecoilState } from 'recoil';
@@ -6,13 +12,14 @@ import { addModalState } from '../recoil/modal';
 import useTodo from '../hooks/useTodo';
 import { useEffect } from 'react';
 import TodoItem from './TodoItem';
-import { grey } from '@mui/material/colors';
+import { Stack } from '@mui/system';
 
 interface DayProps {
   date: Date;
+  width: string;
 }
 
-const DayBox = ({ date }: DayProps) => {
+const DayBox = ({ date, width }: DayProps) => {
   const setModalState = useSetRecoilState(addModalState);
   const { getTodos, fetchTodos } = useTodo();
 
@@ -27,35 +34,45 @@ const DayBox = ({ date }: DayProps) => {
 
   return (
     <List
-      sx={{
-        height: '400px',
-        bgcolor: 'background.paper',
-        flexBasis: '300px',
-        flexGrow: 1,
-        padding: '0 10px',
-        border: `1px solid ${grey[100]}`,
-        overflow: 'auto',
-      }}
+      sx={{ width, minHeight: 300 }}
       subheader={
-        <ListSubheader
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
-          <Typography variant="h6">{`${
-            dayArr[date.getDay()]
-          } ${date.getDate()}`}</Typography>
-          <IconButton onClick={handleClickAddButton} edge="end">
-            <AddIcon />
-          </IconButton>
+        <ListSubheader sx={{ padding: '0px' }}>
+          <Stack
+            direction={'row'}
+            spacing={1}
+            sx={{
+              alignItems: 'center',
+              borderBottom: '1px solid gray',
+            }}
+          >
+            <Typography variant="body1" sx={{ fontWeight: 800 }}>{`${
+              dayArr[date.getDay()]
+            }`}</Typography>
+            <Typography variant="body1">{date.getDate()}</Typography>
+          </Stack>
         </ListSubheader>
       }
     >
       {getTodos(date)?.map((todo) => (
         <TodoItem key={todo.id} todo={todo} />
       ))}
+
+      <ListItem disablePadding>
+        <ListItemButton
+          onClick={handleClickAddButton}
+          dense
+          sx={{
+            margin: '2px 0px',
+            padding: '4px 8px',
+            border: '1px solid lightgray',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <AddIcon sx={{ color: 'lightgray' }} />
+        </ListItemButton>
+      </ListItem>
     </List>
   );
 };

@@ -33,11 +33,11 @@ function Main() {
     <>
       <CssBaseline />
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <Container maxWidth="xl">
+        <Container sx={{ padding: '0px' }}>
           <DateControllPanel />
-          <Stack direction={'row'} sx={{ flexWrap: 'wrap' }}>
+          <Stack direction={'row'} spacing={1}>
             {currentWeekDays.map((date, i) => (
-              <DayBox key={i} date={date} />
+              <DayBox key={i} width="14%" date={date} />
             ))}
           </Stack>
         </Container>

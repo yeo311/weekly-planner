@@ -1,5 +1,5 @@
 import { Container, CssBaseline, Stack } from '@mui/material';
-import { useLayoutEffect } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import AddModal from '../components/AddModal';
@@ -16,7 +16,7 @@ function Main() {
   const [loginData, setLoginData] = useRecoilState(userState);
   const currentWeekDays = useRecoilValue(currentWeekDaysState);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (loginData.isLogin) return;
     const uid =
       window.localStorage.getItem('uid') ||

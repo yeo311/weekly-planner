@@ -20,10 +20,6 @@ const router = createBrowserRouter([
     path: '/login',
     element: <Login />,
   },
-  {
-    path: '/:cur',
-    element: <Main />,
-  },
 ]);
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(

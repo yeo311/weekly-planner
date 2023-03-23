@@ -2,7 +2,10 @@ import {
   Alert,
   Box,
   Button,
+  Checkbox,
   Container,
+  FormControlLabel,
+  FormGroup,
   TextField,
   Typography,
 } from '@mui/material';
@@ -10,6 +13,7 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
+import MarginBox from '../components/MarginBox';
 import { userState } from '../recoil/user';
 import { auth } from '../utils/firebase';
 
@@ -19,6 +23,7 @@ export default function Login() {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [isError, setIsError] = useState<boolean>(false);
+  const [isKeepLogin, setIsKeepLogin] = useState<boolean>(false);
 
   const handleSubmit = async () => {
     if (!email || !password) return;
@@ -29,7 +34,11 @@ export default function Login() {
         password
       );
       setLoginState({ isLogin: true, uid: userCredential.user.uid });
-      window.sessionStorage.setItem('uid', userCredential.user.uid);
+      if (isKeepLogin) {
+        window.localStorage.setItem('uid', userCredential.user.uid);
+      } else {
+        window.sessionStorage.setItem('uid', userCredential.user.uid);
+      }
       navigate('/');
     } catch (error) {
       console.error(error);
@@ -48,7 +57,7 @@ export default function Login() {
       }}
     >
       <Typography variant="h4">WEEKLY PLANNER 로그인</Typography>
-      <Box sx={{ height: 20 }} />
+      <MarginBox />
       <Box component="form">
         <div>
           <TextField
@@ -60,7 +69,7 @@ export default function Login() {
             }}
           />
         </div>
-        <Box sx={{ height: 20 }} />
+        <MarginBox />
         <div>
           <TextField
             type="password"
@@ -76,13 +85,25 @@ export default function Login() {
             }}
           />
         </div>
+        <MarginBox />
+        <FormGroup>
+          <FormControlLabel
+            control={
+              <Checkbox
+                value={isKeepLogin}
+                onChange={(_, v) => setIsKeepLogin(v)}
+              />
+            }
+            label="로그인 유지"
+          />
+        </FormGroup>
         {isError && (
           <>
-            <Box sx={{ height: 20 }} />
+            <MarginBox />
             <Alert severity="error">계정과 패스워드를 확인해주세요.</Alert>
           </>
         )}
-        <Box sx={{ height: 20 }} />
+        <MarginBox />
         <Button variant="contained" onClick={handleSubmit}>
           로그인
         </Button>

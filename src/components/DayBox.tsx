@@ -1,4 +1,4 @@
-import { IconButton, Paper, Stack, Typography } from '@mui/material';
+import { IconButton, List, ListSubheader, Typography } from '@mui/material';
 import { dayArr } from '../utils/date';
 import AddIcon from '@mui/icons-material/Add';
 import { useSetRecoilState } from 'recoil';
@@ -6,6 +6,7 @@ import { addModalState } from '../recoil/modal';
 import useTodo from '../hooks/useTodo';
 import { useEffect } from 'react';
 import TodoItem from './TodoItem';
+import { grey } from '@mui/material/colors';
 
 interface DayProps {
   date: Date;
@@ -25,20 +26,37 @@ const DayBox = ({ date }: DayProps) => {
   }, [date, getTodos, fetchTodos]);
 
   return (
-    <Paper elevation={3} sx={{ padding: '10px', width: '200px' }}>
-      <Stack direction="row" spacing={1} alignItems="center">
-        <Typography variant="h6">{dayArr[date.getDay()]}</Typography>
-        <Typography>{date.getDate()}</Typography>
-        <IconButton onClick={handleClickAddButton}>
-          <AddIcon />
-        </IconButton>
-      </Stack>
-      <Stack>
-        {getTodos(date)?.map((todo) => (
-          <TodoItem key={todo.id} todo={todo} />
-        ))}
-      </Stack>
-    </Paper>
+    <List
+      sx={{
+        height: '400px',
+        bgcolor: 'background.paper',
+        flexBasis: '300px',
+        flexGrow: 1,
+        padding: '0 10px',
+        border: `1px solid ${grey[100]}`,
+        overflow: 'auto',
+      }}
+      subheader={
+        <ListSubheader
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <Typography variant="h6">{`${
+            dayArr[date.getDay()]
+          } ${date.getDate()}`}</Typography>
+          <IconButton onClick={handleClickAddButton} edge="end">
+            <AddIcon />
+          </IconButton>
+        </ListSubheader>
+      }
+    >
+      {getTodos(date)?.map((todo) => (
+        <TodoItem key={todo.id} todo={todo} />
+      ))}
+    </List>
   );
 };
 

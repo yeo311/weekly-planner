@@ -18,7 +18,10 @@ function Main() {
 
   useLayoutEffect(() => {
     if (loginData.isLogin) return;
-    const uid = window.sessionStorage.getItem('uid');
+    const uid =
+      window.localStorage.getItem('uid') ||
+      window.sessionStorage.getItem('uid');
+
     if (uid) {
       setLoginData({ isLogin: true, uid });
     } else {
@@ -32,7 +35,7 @@ function Main() {
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <Container maxWidth="xl">
           <DateControllPanel />
-          <Stack direction="row" spacing={2}>
+          <Stack direction={'row'} sx={{ flexWrap: 'wrap' }}>
             {currentWeekDays.map((date, i) => (
               <DayBox key={i} date={date} />
             ))}

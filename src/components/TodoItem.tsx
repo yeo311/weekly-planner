@@ -1,4 +1,11 @@
-import { Stack, Typography, Checkbox, IconButton } from '@mui/material';
+import {
+  Checkbox,
+  IconButton,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+} from '@mui/material';
 import useTodo from '../hooks/useTodo';
 import { Todo } from '../types/todo';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -28,14 +35,33 @@ const TodoItem = ({ todo }: TodoItemProps) => {
     setDialog({ isOpen: true, targetTodo: todo });
   };
 
+  const labelId = `todo-item-label-${todo.id}`;
   return (
-    <Stack direction="row" alignItems="center">
-      <Checkbox checked={todo.isCompleted} onChange={toggleIsCompleted} />
-      <Typography>{todo.subject}</Typography>
-      <IconButton onClick={handleClickDeleteBtn}>
-        <DeleteIcon />
-      </IconButton>
-    </Stack>
+    <ListItem
+      disablePadding
+      secondaryAction={
+        <IconButton
+          edge="end"
+          aria-lebel="delete"
+          onClick={handleClickDeleteBtn}
+        >
+          <DeleteIcon />
+        </IconButton>
+      }
+    >
+      <ListItemButton onClick={toggleIsCompleted} dense>
+        <ListItemIcon>
+          <Checkbox
+            edge="start"
+            checked={todo.isCompleted}
+            tabIndex={-1}
+            disableRipple
+            inputProps={{ 'aria-labelledby': labelId }}
+          />
+        </ListItemIcon>
+        <ListItemText id={labelId} primary={todo.subject} />
+      </ListItemButton>
+    </ListItem>
   );
 };
 

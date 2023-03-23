@@ -18,12 +18,13 @@ import useTodo from '../hooks/useTodo';
 import { userState } from '../recoil/user';
 import { addModalState } from '../recoil/modal';
 import { addFirebaseRepetitiveTodo, addFirebaseTodo } from '../utils/firebase';
-import { RepeatingTypes } from '../types/todo';
+import { RepeatingTypes, TodoColors } from '../types/todo';
 import { dayArr } from '../utils/date';
 import { MobileDatePicker } from '@mui/x-date-pickers';
 import MarginBox from './MarginBox';
 import dayjs, { Dayjs } from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import { Circle } from '@mui/icons-material';
 dayjs.extend(utc);
 
 const AddModal = () => {
@@ -35,9 +36,12 @@ const AddModal = () => {
     'none'
   );
   const [endDate, setEndDate] = useState<Dayjs | null>(null);
+  const [color, setColor] = useState<TodoColors>(TodoColors.Green);
 
   const closeModal = () => {
     setModalState((prev) => ({ ...prev, isShowModal: false }));
+    setRepeatingType('none');
+    setEndDate(null);
   };
   const { fetchTodos, cleanTodos } = useTodo();
 
@@ -45,6 +49,10 @@ const AddModal = () => {
 
   const handleRepeatingTypeChange = (event: SelectChangeEvent) => {
     setRepeatingType(event.target.value as RepeatingTypes);
+  };
+
+  const handleColorChange = (event: SelectChangeEvent) => {
+    setColor(event.target.value as TodoColors);
   };
 
   const handleClickSubmit = async () => {
@@ -55,7 +63,12 @@ const AddModal = () => {
     try {
       setIsLoading(true);
       if (repeatingType === 'none') {
-        await addFirebaseTodo(loginData.uid, modalState.targetDate, value);
+        await addFirebaseTodo(
+          loginData.uid,
+          modalState.targetDate,
+          value,
+          color
+        );
         fetchTodos(modalState.targetDate);
       } else {
         const repeatingNumber =
@@ -70,7 +83,8 @@ const AddModal = () => {
           endDate ? endDate.utc(true).toDate() : new Date('2099-12-31'),
           repeatingType,
           repeatingNumber,
-          value
+          value,
+          color
         );
         cleanTodos();
       }
@@ -106,6 +120,35 @@ const AddModal = () => {
           fullWidth
           onChange={(e) => setValue(e.target.value)}
         />
+        <MarginBox />
+        <FormControl variant="standard">
+          <InputLabel id="color">색상</InputLabel>
+          <Select
+            labelId="color"
+            label="color"
+            value={color}
+            onChange={handleColorChange}
+          >
+            <MenuItem value={TodoColors.Green}>
+              <Circle sx={{ color: TodoColors.Green }} />
+            </MenuItem>
+            <MenuItem value={TodoColors.Blue}>
+              <Circle sx={{ color: TodoColors.Blue }} />
+            </MenuItem>
+            <MenuItem value={TodoColors.Orange}>
+              <Circle sx={{ color: TodoColors.Orange }} />
+            </MenuItem>
+            <MenuItem value={TodoColors.Red}>
+              <Circle sx={{ color: TodoColors.Red }} />
+            </MenuItem>
+            <MenuItem value={TodoColors.Violet}>
+              <Circle sx={{ color: TodoColors.Violet }} />
+            </MenuItem>
+            <MenuItem value={TodoColors.Yellow}>
+              <Circle sx={{ color: TodoColors.Yellow }} />
+            </MenuItem>
+          </Select>
+        </FormControl>
         <MarginBox />
         <FormControl variant="standard">
           <InputLabel id="repeating-type">반복</InputLabel>

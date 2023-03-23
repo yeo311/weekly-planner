@@ -27,6 +27,7 @@ export default function useTodo() {
         isCompleted: data.isCompleted,
         id: doc.id,
         repeatingType: 'single',
+        color: data.color,
       });
     });
 
@@ -70,6 +71,7 @@ export default function useTodo() {
         date,
         id: doc.id,
         isCompleted: data.completedDates.includes(date.getTime()),
+        color: data.color,
       });
     });
 

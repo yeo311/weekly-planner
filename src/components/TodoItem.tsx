@@ -1,18 +1,18 @@
 import { ListItem, ListItemButton, ListItemText } from '@mui/material';
 import useTodo from '../hooks/useTodo';
-import { Todo } from '../types/todo';
+import { Todo, TodoColors } from '../types/todo';
 import { useSetRecoilState } from 'recoil';
 import { deleteDialogState } from '../recoil/modal';
-import { useState } from 'react';
 
 interface TodoItemProps {
   todo: Todo;
 }
 
+const DISABLE_COLOR = '#c4c4c4';
+
 const TodoItem = ({ todo }: TodoItemProps) => {
   const { fetchTodos, updateIsCompleted } = useTodo();
   const setDialog = useSetRecoilState(deleteDialogState);
-  const [mouseDownTime, setMouseDownTime] = useState<number | null>(null);
 
   const deleteItem = () => {
     setDialog({ isOpen: true, targetTodo: todo });
@@ -29,35 +29,27 @@ const TodoItem = ({ todo }: TodoItemProps) => {
     });
   };
 
-  const handleMouseDown = () => {
-    setMouseDownTime(new Date().getTime());
-  };
-
-  const handleMouseUp = () => {
-    if (mouseDownTime !== null && new Date().getTime() - mouseDownTime >= 500) {
-      deleteItem();
-    } else {
-      toggleIsCompleted();
-    }
-  };
-
   const labelId = `todo-item-label-${todo.id}`;
+  const todoColor = todo.color || TodoColors.Green;
   return (
     <ListItem disablePadding>
       <ListItemButton
-        onMouseDown={handleMouseDown}
-        onMouseUp={handleMouseUp}
+        onClick={toggleIsCompleted}
+        onDoubleClick={deleteItem}
         dense
         sx={{
           margin: '2px 0px',
           padding: '4px 8px',
-          backgroundColor: todo.isCompleted ? '#d5eecf' : '#c4c4c4',
+          backgroundColor: !todo.isCompleted ? todoColor : DISABLE_COLOR,
+          '&:hover': {
+            backgroundColor: !todo.isCompleted ? todoColor : DISABLE_COLOR,
+          },
         }}
       >
         <ListItemText
           id={labelId}
           primary={todo.subject}
-          sx={{ textDecoration: todo.isCompleted ? 'none' : 'line-through' }}
+          sx={{ textDecoration: !todo.isCompleted ? 'none' : 'line-through' }}
           primaryTypographyProps={{
             sx: {
               overflow: 'hidden',

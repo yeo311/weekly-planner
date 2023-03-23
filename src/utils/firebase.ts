@@ -14,7 +14,12 @@ import {
   updateDoc,
   where,
 } from 'firebase/firestore';
-import { RepeatingTypes, RepetitiveTodoDeleteTypes, Todo } from '../types/todo';
+import {
+  RepeatingTypes,
+  RepetitiveTodoDeleteTypes,
+  Todo,
+  TodoColors,
+} from '../types/todo';
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -29,11 +34,17 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 
-export function addFirebaseTodo(uid: string, date: Date, subject: string) {
+export function addFirebaseTodo(
+  uid: string,
+  date: Date,
+  subject: string,
+  color: TodoColors
+) {
   return addDoc(collection(db, uid), {
     subject,
     date: Timestamp.fromDate(date),
     isCompleted: false,
+    color,
   });
 }
 
@@ -63,7 +74,8 @@ export function addFirebaseRepetitiveTodo(
   endDate: Date,
   repeatingType: RepeatingTypes,
   repeatingNumber: number | null,
-  subject: string
+  subject: string,
+  color: TodoColors
 ) {
   return addDoc(collection(db, `${uid}_repeat`), {
     startDate: Timestamp.fromDate(startDate),
@@ -71,6 +83,7 @@ export function addFirebaseRepetitiveTodo(
     repeatingType,
     repeatingNumber,
     subject,
+    color,
     completedDates: [],
     deletedDates: [],
   });

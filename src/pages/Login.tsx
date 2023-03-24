@@ -15,7 +15,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 import MarginBox from '../components/MarginBox';
 import { userState } from '../recoil/user';
-import { auth } from '../utils/firebase';
+import { auth } from '../firebase/init';
 
 export default function Login() {
   const setLoginState = useSetRecoilState(userState);

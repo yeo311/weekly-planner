@@ -1,8 +1,7 @@
-import { IconButton, Stack, Typography } from '@mui/material';
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import { Stack, Typography } from '@mui/material';
 import { useRecoilState } from 'recoil';
 import { currentDateState } from '../recoil/date';
+import ArrowIconButton from './buttons/ArrowIconButton';
 
 const DateControllPanel = () => {
   const [currentDate, setCurrentDate] = useRecoilState(currentDateState);
@@ -18,12 +17,9 @@ const DateControllPanel = () => {
 
   return (
     <Stack direction="row" spacing={3} alignItems="center" height={50}>
-      <IconButton aria-label="back" onClick={() => moveWeek(-7)}>
-        <ArrowBackIosNewIcon />
-      </IconButton>
-      <IconButton aria-label="forward" onClick={() => moveWeek(7)}>
-        <ArrowForwardIosIcon />
-      </IconButton>
+      <ArrowIconButton direction="left" onClick={() => moveWeek(-7)} />
+      <ArrowIconButton direction="right" onClick={() => moveWeek(7)} />
+
       <Typography variant="h6">{`${curDate.getFullYear()}년 ${
         curDate.getMonth() + 1
       }월`}</Typography>

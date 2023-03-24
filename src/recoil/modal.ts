@@ -1,6 +1,8 @@
 import { atom } from 'recoil';
 import { Todo } from '../types/todo';
 
+export type DialogTypes = 'info' | 'delete' | 'edit';
+
 interface AddModalState {
   isShowModal: boolean;
   targetDate: Date;
@@ -14,15 +16,17 @@ export const addModalState = atom<AddModalState>({
   },
 });
 
-interface DeleteDialogState {
+interface DialogState {
   isOpen: boolean;
+  type: DialogTypes;
   targetTodo: Todo | null;
 }
 
-export const deleteDialogState = atom<DeleteDialogState>({
-  key: 'deleteDialogState',
+export const dialogState = atom<DialogState>({
+  key: 'DialogState',
   default: {
     isOpen: false,
     targetTodo: null,
+    type: 'info',
   },
 });

@@ -14,14 +14,14 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import useTodo from '../hooks/useTodo';
-import { userState } from '../recoil/user';
-import { addModalState } from '../recoil/modal';
-import { addFirebaseRepetitiveTodo, addFirebaseTodo } from '../utils/firebase';
-import { RepeatingTypes, TodoColors } from '../types/todo';
-import { dayArr } from '../utils/date';
+import useTodo from '../../hooks/useTodo';
+import { userState } from '../../recoil/user';
+import { addModalState } from '../../recoil/modal';
+import { addTodoItem } from '../../firebase/create';
+import { RepeatingTypes, TodoColors } from '../../types/todo';
+import { dayArr } from '../../utils/date';
 import { MobileDatePicker } from '@mui/x-date-pickers';
-import MarginBox from './MarginBox';
+import MarginBox from '../MarginBox';
 import dayjs, { Dayjs } from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { Circle } from '@mui/icons-material';
@@ -32,15 +32,13 @@ const AddModal = () => {
   const [value, setValue] = useState<string>('');
   const [showError, setShowError] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [repeatingType, setRepeatingType] = useState<RepeatingTypes | 'none'>(
-    'none'
-  );
+  const [repeatingType, setRepeatingType] = useState<RepeatingTypes>('single');
   const [endDate, setEndDate] = useState<Dayjs | null>(null);
   const [color, setColor] = useState<TodoColors>(TodoColors.Green);
 
   const closeModal = () => {
     setModalState((prev) => ({ ...prev, isShowModal: false }));
-    setRepeatingType('none');
+    setRepeatingType('single');
     setEndDate(null);
   };
   const { fetchTodos, cleanTodos } = useTodo();
@@ -62,30 +60,26 @@ const AddModal = () => {
     }
     try {
       setIsLoading(true);
-      if (repeatingType === 'none') {
-        await addFirebaseTodo(
-          loginData.uid,
-          modalState.targetDate,
-          value,
-          color
-        );
-        fetchTodos(modalState.targetDate);
-      } else {
-        const repeatingNumber =
+      addTodoItem(loginData.uid, {
+        date: modalState.targetDate,
+        subject: value,
+        color,
+        startDate: modalState.targetDate,
+        endDate:
+          repeatingType !== 'single' && endDate
+            ? endDate.utc(true).toDate()
+            : new Date('2099-12-31'),
+        repeatingType,
+        repeatingNumber:
           repeatingType === 'monthly'
             ? modalState.targetDate.getDate()
             : repeatingType === 'weekly'
             ? modalState.targetDate.getDay()
-            : null;
-        await addFirebaseRepetitiveTodo(
-          loginData.uid,
-          modalState.targetDate,
-          endDate ? endDate.utc(true).toDate() : new Date('2099-12-31'),
-          repeatingType,
-          repeatingNumber,
-          value,
-          color
-        );
+            : undefined,
+      });
+      if (repeatingType === 'single') {
+        fetchTodos(modalState.targetDate);
+      } else {
         cleanTodos();
       }
       setIsLoading(false);
@@ -129,24 +123,13 @@ const AddModal = () => {
             value={color}
             onChange={handleColorChange}
           >
-            <MenuItem value={TodoColors.Green}>
-              <Circle sx={{ color: TodoColors.Green }} />
-            </MenuItem>
-            <MenuItem value={TodoColors.Blue}>
-              <Circle sx={{ color: TodoColors.Blue }} />
-            </MenuItem>
-            <MenuItem value={TodoColors.Orange}>
-              <Circle sx={{ color: TodoColors.Orange }} />
-            </MenuItem>
-            <MenuItem value={TodoColors.Red}>
-              <Circle sx={{ color: TodoColors.Red }} />
-            </MenuItem>
-            <MenuItem value={TodoColors.Violet}>
-              <Circle sx={{ color: TodoColors.Violet }} />
-            </MenuItem>
-            <MenuItem value={TodoColors.Yellow}>
-              <Circle sx={{ color: TodoColors.Yellow }} />
-            </MenuItem>
+            {(Object.keys(TodoColors) as Array<keyof typeof TodoColors>).map(
+              (key) => (
+                <MenuItem value={TodoColors[key]}>
+                  <Circle sx={{ color: TodoColors[key] }} />
+                </MenuItem>
+              )
+            )}
           </Select>
         </FormControl>
         <MarginBox />
@@ -158,7 +141,7 @@ const AddModal = () => {
             value={repeatingType}
             onChange={handleRepeatingTypeChange}
           >
-            <MenuItem value="none">반복 안함</MenuItem>
+            <MenuItem value="single">반복 안함</MenuItem>
             <MenuItem value="weekly">
               매주 {`${dayArr[modalState.targetDate.getDay()]}요일`}
             </MenuItem>
@@ -172,7 +155,7 @@ const AddModal = () => {
         <MarginBox />
         <MobileDatePicker
           label="종료일 (선택 하지 않으면 계속 반복)"
-          sx={{ display: repeatingType === 'none' ? 'none' : 'box' }}
+          sx={{ display: repeatingType === 'single' ? 'none' : 'box' }}
           value={endDate}
           onChange={(newValue) => setEndDate(newValue)}
         />

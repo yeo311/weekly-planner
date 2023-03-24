@@ -36,3 +36,5 @@ export interface RepetitiveTodo {
   deletedDates: number[];
   color: TodoColors;
 }
+
+export type TotalTodo = Partial<Todo> & Partial<RepetitiveTodo>;

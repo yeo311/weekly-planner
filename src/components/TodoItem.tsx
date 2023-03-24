@@ -1,32 +1,38 @@
-import { ListItem, ListItemButton, ListItemText } from '@mui/material';
+import {
+  Checkbox,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+} from '@mui/material';
 import useTodo from '../hooks/useTodo';
 import { Todo, TodoColors } from '../types/todo';
 import { useSetRecoilState } from 'recoil';
-import { deleteDialogState } from '../recoil/modal';
+import { dialogState } from '../recoil/modal';
 
 interface TodoItemProps {
   todo: Todo;
 }
 
-const DISABLE_COLOR = '#c4c4c4';
-
 const TodoItem = ({ todo }: TodoItemProps) => {
-  const { fetchTodos, updateIsCompleted } = useTodo();
-  const setDialog = useSetRecoilState(deleteDialogState);
+  const { updateIsCompleted } = useTodo();
+  const setDialog = useSetRecoilState(dialogState);
+  const { fetchTodos } = useTodo();
 
-  const deleteItem = () => {
-    setDialog({ isOpen: true, targetTodo: todo });
+  const openDialog = () => {
+    setDialog({ isOpen: true, targetTodo: todo, type: 'info' });
   };
 
-  const toggleIsCompleted = () => {
-    updateIsCompleted(
-      todo.id,
-      !todo.isCompleted,
-      todo.repeatingType,
-      todo.date
-    ).then(() => {
-      fetchTodos(todo.date);
-    });
+  const handleChecked = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    checked: boolean
+  ) => {
+    // e.preventDefault();
+    e.stopPropagation();
+    updateIsCompleted(todo.id, checked, todo.repeatingType, todo.date).then(
+      () => {
+        fetchTodos(todo.date);
+      }
+    );
   };
 
   const labelId = `todo-item-label-${todo.id}`;
@@ -34,22 +40,24 @@ const TodoItem = ({ todo }: TodoItemProps) => {
   return (
     <ListItem disablePadding>
       <ListItemButton
-        onClick={toggleIsCompleted}
-        onDoubleClick={deleteItem}
         dense
         sx={{
           margin: '2px 0px',
-          padding: '4px 8px',
-          backgroundColor: !todo.isCompleted ? todoColor : DISABLE_COLOR,
+          padding: '4px 8px 4px 0px',
+          backgroundColor: todoColor,
           '&:hover': {
-            backgroundColor: !todo.isCompleted ? todoColor : DISABLE_COLOR,
+            backgroundColor: todoColor,
           },
         }}
       >
+        <Checkbox
+          size="small"
+          checked={todo.isCompleted}
+          onChange={handleChecked}
+        />
         <ListItemText
           id={labelId}
           primary={todo.subject}
-          sx={{ textDecoration: !todo.isCompleted ? 'none' : 'line-through' }}
           primaryTypographyProps={{
             sx: {
               overflow: 'hidden',
@@ -57,6 +65,7 @@ const TodoItem = ({ todo }: TodoItemProps) => {
               textOverflow: 'ellipsis',
             },
           }}
+          onClick={openDialog}
         />
       </ListItemButton>
     </ListItem>

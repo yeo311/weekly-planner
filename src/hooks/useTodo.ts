@@ -1,15 +1,19 @@
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { userState } from '../recoil/user';
 import { todoListState } from '../recoil/todo';
+import { RepeatingTypes, RepetitiveTodoDeleteTypes, Todo } from '../types/todo';
+import {
+  getFirebaseRepetitiveTodosByDate,
+  getFireBaseTodosByDate,
+} from '../firebase/read';
+import {
+  updateFirebaseRepetitiveTodosIsCompleted,
+  updateFirebaseTodoItem,
+} from '../firebase/update';
 import {
   deleteFirebaseRepetitiveTodo,
   deleteFirebaseTodo,
-  getFirebaseRepetitiveTodosByDate,
-  getFireBaseTodosByDate,
-  updateFirebaseRepetitiveTodosIsCompleted,
-  updateFirebaseTodoItem,
-} from '../utils/firebase';
-import { RepeatingTypes, RepetitiveTodoDeleteTypes, Todo } from '../types/todo';
+} from '../firebase/delete';
 
 export default function useTodo() {
   const { uid } = useRecoilValue(userState);

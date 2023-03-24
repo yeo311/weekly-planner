@@ -2,14 +2,14 @@ import { Container, CssBaseline, Stack } from '@mui/material';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import AddModal from '../components/AddModal';
+import AddModal from '../components/modals/AddModal';
 import DayBox from '../components/DayBox';
 import DateControllPanel from '../components/DateControllPanel';
 import { userState } from '../recoil/user';
 import { currentWeekDaysState } from '../recoil/date';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import DeleteDialog from '../components/DeleteDialog';
+import Dialogs from '../components/dialogs/Dialogs';
 
 function Main() {
   const navigate = useNavigate();
@@ -42,7 +42,7 @@ function Main() {
           </Stack>
         </Container>
         <AddModal />
-        <DeleteDialog />
+        <Dialogs />
       </LocalizationProvider>
     </>
   );

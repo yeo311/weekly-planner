@@ -14,9 +14,8 @@ interface TodoItemProps {
 }
 
 const TodoItem = ({ todo }: TodoItemProps) => {
-  const { updateIsCompleted } = useTodo();
+  const { updateIsCompleted, fetchTodoById } = useTodo();
   const setDialog = useSetRecoilState(dialogState);
-  const { fetchTodos } = useTodo();
 
   const openDialog = () => {
     setDialog({ isOpen: true, targetTodo: todo, type: 'info' });
@@ -30,7 +29,7 @@ const TodoItem = ({ todo }: TodoItemProps) => {
     e.stopPropagation();
     updateIsCompleted(todo.id, checked, todo.repeatingType, todo.date).then(
       () => {
-        fetchTodos(todo.date);
+        fetchTodoById(todo.id, todo.repeatingType);
       }
     );
   };

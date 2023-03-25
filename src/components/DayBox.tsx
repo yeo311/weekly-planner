@@ -10,7 +10,6 @@ import AddIcon from '@mui/icons-material/Add';
 import { useSetRecoilState } from 'recoil';
 import { addModalState } from '../recoil/modal';
 import useTodo from '../hooks/useTodo';
-import { useEffect } from 'react';
 import TodoItem from './TodoItem';
 import { Stack } from '@mui/system';
 
@@ -21,16 +20,11 @@ interface DayProps {
 
 const DayBox = ({ date, width }: DayProps) => {
   const setModalState = useSetRecoilState(addModalState);
-  const { getTodos, fetchTodos } = useTodo();
+  const { getTodos } = useTodo();
 
   const handleClickAddButton = () => {
     setModalState({ isShowModal: true, targetDate: date });
   };
-
-  useEffect(() => {
-    if (getTodos(date)) return;
-    fetchTodos(date);
-  }, [date, getTodos, fetchTodos]);
 
   return (
     <List

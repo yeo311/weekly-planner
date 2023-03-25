@@ -23,18 +23,39 @@ const DeleteDialog = () => {
   const [repetitiveTodoDeleteType, setRepetitiveTodoDeleteType] =
     useState<RepetitiveTodoDeleteTypes>('only');
 
-  const { fetchTodos, deleteTodo, cleanTodos } = useTodo();
+  const { deleteTodo, fetchTodoById, setTodos } = useTodo();
 
-  const handleClickDelete = () => {
+  const handleClickDelete = async () => {
     if (!dialog.targetTodo) return;
-    deleteTodo(dialog.targetTodo, repetitiveTodoDeleteType).then(() => {
-      if (dialog.targetTodo?.repeatingType === 'single') {
-        !!dialog.targetTodo && fetchTodos(dialog.targetTodo?.date);
+    try {
+      await deleteTodo(dialog.targetTodo, repetitiveTodoDeleteType);
+      if (
+        !!dialog.targetTodo.repeatingType &&
+        dialog.targetTodo.repeatingType !== 'single' &&
+        repetitiveTodoDeleteType !== 'all'
+      ) {
+        fetchTodoById(dialog.targetTodo.id, dialog.targetTodo.repeatingType);
       } else {
-        cleanTodos();
+        setTodos((prev) => {
+          const newData: typeof prev = {};
+          Object.keys(prev).forEach((keyStr) => {
+            const key = Number(keyStr);
+            if (
+              prev[key].findIndex((t) => t.id === dialog.targetTodo?.id) === -1
+            )
+              return;
+            newData[key] = prev[key].filter(
+              (t) => t.id !== dialog.targetTodo?.id
+            );
+          });
+          return { ...prev, ...newData };
+        });
       }
+
       resetDialogState();
-    });
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (
@@ -46,8 +67,8 @@ const DeleteDialog = () => {
       <DialogTitle>{'할일을 삭제하시겠습니까?'}</DialogTitle>
       <DialogContent>
         <DialogContentText>삭제하면 복구할 수 없습니다.</DialogContentText>
-        {!!dialog.targetTodo &&
-          dialog.targetTodo?.repeatingType !== 'single' && (
+        {!!dialog.targetTodo?.repeatingType &&
+          dialog.targetTodo.repeatingType !== 'single' && (
             <>
               <MarginBox />
               <RadioGroup

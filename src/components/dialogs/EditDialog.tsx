@@ -52,7 +52,7 @@ const EditDialog = () => {
   );
   const [subject, setSubject] = useState<string>(targetTodo?.subject || '');
   const user = useRecoilValue(userState);
-  const { fetchTodos, cleanTodos } = useTodo();
+  const { fetchTodoById } = useTodo();
 
   const changeDialogTypeTo = (type: DialogTypes) =>
     setDialog((prevData) => ({ ...prevData, type }));
@@ -67,20 +67,17 @@ const EditDialog = () => {
     setSubject(e.target.value);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!targetTodo) return;
-    updateTodoItem(user.uid, {
+
+    await updateTodoItem(user.uid, {
       ...targetTodo,
       subject,
       color: selectColor,
-    }).then(() => {
-      if (targetTodo.repeatingType === 'single') {
-        fetchTodos(targetTodo.date);
-      } else {
-        cleanTodos();
-      }
-      resetDialogState();
     });
+
+    fetchTodoById(targetTodo.id, targetTodo.repeatingType);
+    resetDialogState();
   };
 
   useEffect(() => {
@@ -129,7 +126,7 @@ const EditDialog = () => {
                 {(
                   Object.keys(TodoColors) as Array<keyof typeof TodoColors>
                 ).map((key) => (
-                  <MenuItem value={TodoColors[key]}>
+                  <MenuItem key={TodoColors[key]} value={TodoColors[key]}>
                     <Circle sx={{ color: TodoColors[key] }} />
                   </MenuItem>
                 ))}

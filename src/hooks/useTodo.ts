@@ -3,8 +3,10 @@ import { userState } from '../recoil/user';
 import { todoListState } from '../recoil/todo';
 import { RepeatingTypes, RepetitiveTodoDeleteTypes, Todo } from '../types/todo';
 import {
-  getFirebaseRepetitiveTodosByDate,
-  getFireBaseTodosByDate,
+  getRepetitiveTodoById,
+  getRepetitiveTodosByDateRange,
+  getTodoById,
+  getTodosByDateRange,
 } from '../firebase/read';
 import {
   updateFirebaseRepetitiveTodosIsCompleted,
@@ -14,72 +16,98 @@ import {
   deleteFirebaseRepetitiveTodo,
   deleteFirebaseTodo,
 } from '../firebase/delete';
+import { currentWeekDaysState } from '../recoil/date';
+import { checkIfRepeatTodoAreIncludedInThisDate } from '../utils/date';
+import { RepetitiveTodoToSingleTodo } from '../utils/todo';
 
 export default function useTodo() {
   const { uid } = useRecoilValue(userState);
   const [todos, setTodos] = useRecoilState(todoListState);
+  const currentWeekDays = useRecoilValue(currentWeekDaysState);
 
-  const fetchTodos = async (date: Date) => {
-    if (!uid) return;
-    const querySnapshot = await getFireBaseTodosByDate(uid, date);
-    const dayTodos: Todo[] = [];
-    querySnapshot.forEach((doc) => {
-      const data = doc.data();
-      dayTodos.push({
-        subject: data.subject,
-        date: data.date.toDate(),
-        isCompleted: data.isCompleted,
-        id: doc.id,
-        repeatingType: 'single',
-        color: data.color,
-      });
-    });
+  const fetchTodosByRange = async () => {
+    if (!currentWeekDays.length) {
+      console.error('Current Week not set');
+    }
 
-    const repeatitiveTodoQuerySnapshot = await getFirebaseRepetitiveTodosByDate(
+    const todos = await getTodosByDateRange(
       uid,
-      date
+      currentWeekDays[0],
+      currentWeekDays[currentWeekDays.length - 1]
+    );
+    const weeklyTodos = todos.reduce<Record<number, Todo[]>>((acc, cur) => {
+      const key = cur.date.getTime();
+      if (!acc[key]) {
+        acc[key] = [cur];
+      } else {
+        acc[key].push(cur);
+      }
+      return acc;
+    }, {});
+
+    const repetitiveTodos = await getRepetitiveTodosByDateRange(
+      uid,
+      currentWeekDays[0],
+      currentWeekDays[currentWeekDays.length - 1]
     );
 
-    repeatitiveTodoQuerySnapshot.forEach((doc) => {
-      const data = doc.data();
-
-      if (data.startDate.toDate().getTime() > date.getTime()) return;
-      if (
-        data.repeatingType === 'weekly' &&
-        data.repeatingNumber !== date.getDay()
-      ) {
-        return;
+    currentWeekDays.forEach((day) => {
+      const includeTodos = repetitiveTodos
+        .filter((todo) => checkIfRepeatTodoAreIncludedInThisDate(day, todo))
+        .map((todo) => RepetitiveTodoToSingleTodo(todo, day));
+      if (!weeklyTodos[day.getTime()]) {
+        weeklyTodos[day.getTime()] = includeTodos;
+      } else {
+        weeklyTodos[day.getTime()] = [
+          ...weeklyTodos[day.getTime()],
+          ...includeTodos,
+        ];
       }
-
-      if (
-        data.repeatingType === 'monthly' &&
-        data.repeatingNumber !== date.getDate()
-      ) {
-        return;
-      }
-
-      if (
-        data.repeatingType === 'weekdays' &&
-        (date.getDay() === 0 || date.getDay() === 6)
-      ) {
-        return;
-      }
-
-      if (!!data.deletedDates && data.deletedDates.includes(date.getTime())) {
-        return;
-      }
-
-      dayTodos.push({
-        subject: data.subject,
-        repeatingType: data.repeatingType,
-        date,
-        id: doc.id,
-        isCompleted: data.completedDates.includes(date.getTime()),
-        color: data.color,
-      });
     });
 
-    setTodos((prevTodos) => ({ ...prevTodos, [date.getTime()]: dayTodos }));
+    setTodos((prev) => {
+      return { ...prev, ...weeklyTodos };
+    });
+  };
+
+  const fetchTodoById = async (id: string, type: RepeatingTypes) => {
+    if (!type || type === 'single') {
+      const todo = await getTodoById(uid, id);
+      const key = todo.date.getTime();
+      setTodos((prev) => {
+        if (!prev[key]) {
+          return { ...prev, [key]: [todo] };
+        } else {
+          const afterRemove = prev[key].filter((t) => t.id !== id);
+          return { ...prev, [key]: [...afterRemove, todo] };
+        }
+      });
+    } else {
+      const repeatTodo = await getRepetitiveTodoById(uid, id);
+      const newData: typeof todos = {};
+      currentWeekDays.forEach((day) => {
+        const isInclude = checkIfRepeatTodoAreIncludedInThisDate(
+          day,
+          repeatTodo
+        );
+        const key = day.getTime();
+        if (!isInclude) {
+          if (todos[key].findIndex((t) => t.id === id) > -1) {
+            newData[key] = todos[key].filter((t) => t.id !== id);
+          }
+          return;
+        }
+        const singleTodo = RepetitiveTodoToSingleTodo(repeatTodo, day);
+        if (todos[key].findIndex((t) => t.id === id) > -1) {
+          newData[key] = todos[key].map((t) => (t.id === id ? singleTodo : t));
+        } else {
+          newData[key] = [...todos[key], singleTodo];
+        }
+      });
+      setTodos((prev) => {
+        return { ...prev, ...newData };
+      });
+    }
   };
 
   const getTodos = (date: Date) => {
@@ -92,7 +120,7 @@ export default function useTodo() {
     repeatingType: RepeatingTypes,
     date: Date
   ) => {
-    if (repeatingType === 'single') {
+    if (!repeatingType || repeatingType === 'single') {
       return updateFirebaseTodoItem(uid, todoId, isCompleted);
     }
     return updateFirebaseRepetitiveTodosIsCompleted(
@@ -103,19 +131,22 @@ export default function useTodo() {
     );
   };
 
-  const cleanTodos = () => {
-    setTodos({});
-  };
-
   const deleteTodo = (
     todo: Todo,
     repetitiveTodoDeleteType: RepetitiveTodoDeleteTypes
   ) => {
-    if (todo.repeatingType === 'single') {
+    if (!todo.repeatingType || todo.repeatingType === 'single') {
       return deleteFirebaseTodo(uid, todo.id);
     }
     return deleteFirebaseRepetitiveTodo(uid, todo, repetitiveTodoDeleteType);
   };
 
-  return { getTodos, fetchTodos, updateIsCompleted, cleanTodos, deleteTodo };
+  return {
+    getTodos,
+    updateIsCompleted,
+    deleteTodo,
+    fetchTodosByRange,
+    fetchTodoById,
+    setTodos,
+  };
 }

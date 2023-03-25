@@ -3,12 +3,13 @@ import { TotalTodo } from '../types/todo';
 import { db } from './init';
 
 function addSingleTodo(uid: string, todo: TotalTodo) {
-  const { subject, date, color } = todo;
+  const { subject, date, color, repeatingType } = todo;
   return addDoc(collection(db, uid), {
     subject,
     date: Timestamp.fromDate(date as Date),
     isCompleted: false,
     color,
+    repeatingType,
   });
 }
 
@@ -28,9 +29,9 @@ function addRepetitiveTodo(uid: string, todo: TotalTodo) {
 }
 
 export function addTodoItem(uid: string, todo: TotalTodo) {
-  if (todo.repeatingType === 'single') {
-    addSingleTodo(uid, todo);
+  if (!todo.repeatingType || todo.repeatingType === 'single') {
+    return addSingleTodo(uid, todo);
   } else {
-    addRepetitiveTodo(uid, todo);
+    return addRepetitiveTodo(uid, todo);
   }
 }

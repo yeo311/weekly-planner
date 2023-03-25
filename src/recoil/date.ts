@@ -3,11 +3,6 @@ import { syncEffect } from 'recoil-sync';
 import { getThisWeekDateArray } from '../utils/date';
 import { number } from '@recoiljs/refine';
 
-export const currentWeekState = atom<Date[]>({
-  key: 'currentWeekState',
-  default: [],
-});
-
 export const currentDateState = atom<number>({
   key: 'currentDateState',
   default: new Date().getTime(),

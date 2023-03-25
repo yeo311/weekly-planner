@@ -41,7 +41,7 @@ const AddModal = () => {
     setRepeatingType('single');
     setEndDate(null);
   };
-  const { fetchTodos, cleanTodos } = useTodo();
+  const { fetchTodoById } = useTodo();
 
   const loginData = useRecoilValue(userState);
 
@@ -60,13 +60,13 @@ const AddModal = () => {
     }
     try {
       setIsLoading(true);
-      addTodoItem(loginData.uid, {
+      const docRef = await addTodoItem(loginData.uid, {
         date: modalState.targetDate,
         subject: value,
         color,
         startDate: modalState.targetDate,
         endDate:
-          repeatingType !== 'single' && endDate
+          repeatingType && repeatingType !== 'single' && endDate
             ? endDate.utc(true).toDate()
             : new Date('2099-12-31'),
         repeatingType,
@@ -75,13 +75,10 @@ const AddModal = () => {
             ? modalState.targetDate.getDate()
             : repeatingType === 'weekly'
             ? modalState.targetDate.getDay()
-            : undefined,
+            : 0,
       });
-      if (repeatingType === 'single') {
-        fetchTodos(modalState.targetDate);
-      } else {
-        cleanTodos();
-      }
+
+      fetchTodoById(docRef.id, repeatingType);
       setIsLoading(false);
       closeModal();
     } catch (e) {
@@ -125,7 +122,7 @@ const AddModal = () => {
           >
             {(Object.keys(TodoColors) as Array<keyof typeof TodoColors>).map(
               (key) => (
-                <MenuItem value={TodoColors[key]}>
+                <MenuItem key={TodoColors[key]} value={TodoColors[key]}>
                   <Circle sx={{ color: TodoColors[key] }} />
                 </MenuItem>
               )

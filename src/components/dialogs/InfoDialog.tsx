@@ -47,7 +47,6 @@ const InfoDialog = () => {
   const openEditDialog = () => changeDialogTypeTo('edit');
 
   const handleClickDeleteButton = () => changeDialogTypeTo('delete');
-  console.log('info', targetTodo);
   if (!targetTodo) return null;
 
   const { subject, color } = targetTodo;

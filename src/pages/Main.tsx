@@ -10,11 +10,14 @@ import { currentWeekDaysState } from '../recoil/date';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import Dialogs from '../components/dialogs/Dialogs';
+import useTodo from '../hooks/useTodo';
 
 function Main() {
   const navigate = useNavigate();
   const [loginData, setLoginData] = useRecoilState(userState);
   const currentWeekDays = useRecoilValue(currentWeekDaysState);
+  const { fetchTodosByRange } = useTodo();
+  const user = useRecoilValue(userState);
 
   useEffect(() => {
     if (loginData.isLogin) return;
@@ -28,6 +31,12 @@ function Main() {
       navigate('/login');
     }
   }, []);
+
+  useEffect(() => {
+    if (user.uid && currentWeekDays.length > 0) {
+      fetchTodosByRange();
+    }
+  }, [currentWeekDays, user.uid]);
 
   return (
     <>

@@ -1,17 +1,19 @@
 import {
+  Chip,
   List,
   ListItem,
   ListItemButton,
   ListSubheader,
   Typography,
 } from '@mui/material';
-import { dayArr } from '../utils/date';
+import { dayArr, isSameDate } from '../utils/date';
 import AddIcon from '@mui/icons-material/Add';
-import { useSetRecoilState } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { addModalState } from '../recoil/modal';
 import useTodo from '../hooks/useTodo';
 import TodoItem from './TodoItem';
 import { Stack } from '@mui/system';
+import { todayState } from '../recoil/date';
 
 interface DayProps {
   date: Date;
@@ -20,11 +22,17 @@ interface DayProps {
 
 const DayBox = ({ date, width }: DayProps) => {
   const setModalState = useSetRecoilState(addModalState);
+  const today = useRecoilValue(todayState);
   const { getTodos } = useTodo();
 
   const handleClickAddButton = () => {
     setModalState({ isShowModal: true, targetDate: date });
   };
+
+  const isToday = isSameDate(today, date);
+  const day = date.getDay();
+  const isSat = day === 6;
+  const isSun = day === 0;
 
   return (
     <List
@@ -36,13 +44,17 @@ const DayBox = ({ date, width }: DayProps) => {
             spacing={1}
             sx={{
               alignItems: 'center',
+              paddingBottom: '5px',
               borderBottom: '1px solid gray',
+              color: isSat ? '#2d83e8' : isSun ? '#f21d1d' : 'black',
             }}
           >
-            <Typography variant="body1" sx={{ fontWeight: 800 }}>{`${
-              dayArr[date.getDay()]
-            }`}</Typography>
+            <Typography
+              variant="body1"
+              sx={{ fontWeight: 800 }}
+            >{`${dayArr[day]}`}</Typography>
             <Typography variant="body1">{date.getDate()}</Typography>
+            {isToday && <Chip label="오늘" size="small" color="info" />}
           </Stack>
         </ListSubheader>
       }

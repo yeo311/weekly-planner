@@ -16,3 +16,8 @@ export const currentWeekDaysState = selector({
     return getThisWeekDateArray(new Date(currentDate));
   },
 });
+
+export const todayState = atom<Date>({
+  key: 'tody',
+  default: new Date(),
+})

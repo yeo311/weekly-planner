@@ -23,6 +23,9 @@ import { useEffect, useState } from 'react';
 import { updateTodoItem } from '../../firebase/update';
 import { userState } from '../../recoil/user';
 import useTodo from '../../hooks/useTodo';
+import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
+import { MobileDatePicker } from '@mui/x-date-pickers';
+import dayjs, { Dayjs } from 'dayjs';
 
 const StyledIconBox = styled.div`
   display: flex;
@@ -52,7 +55,10 @@ const EditDialog = () => {
   );
   const [subject, setSubject] = useState<string>(targetTodo?.subject || '');
   const user = useRecoilValue(userState);
-  const { fetchTodoById } = useTodo();
+  const { fetchTodoById, setTodos } = useTodo();
+  const [todoDate, setTodoDate] = useState<Dayjs | null>(
+    dayjs(targetTodo?.date)
+  );
 
   const changeDialogTypeTo = (type: DialogTypes) =>
     setDialog((prevData) => ({ ...prevData, type }));
@@ -74,7 +80,19 @@ const EditDialog = () => {
       ...targetTodo,
       subject,
       color: selectColor,
+      date: todoDate ? todoDate?.toDate() : new Date(),
     });
+
+    // 날짜 수정 시, 기존 날짜의 투두를 삭제한다.
+    if (targetTodo.date.getTime() !== todoDate?.valueOf()) {
+      setTodos((todos) => {
+        const key = targetTodo.date.getTime();
+        return {
+          ...todos,
+          [key]: todos[key].filter((todo) => todo.id !== targetTodo.id),
+        };
+      });
+    }
 
     fetchTodoById(targetTodo.id, targetTodo.repeatingType);
     resetDialogState();
@@ -84,9 +102,13 @@ const EditDialog = () => {
     if (!targetTodo) return;
     setSubject(targetTodo.subject);
     setSelectColor(targetTodo.color || TodoColors.Green);
+    setTodoDate(dayjs(targetTodo.date));
   }, [targetTodo]);
 
   if (!targetTodo) return null;
+
+  const isSingleType =
+    !targetTodo.repeatingType || targetTodo.repeatingType === 'single';
 
   return (
     <Dialog
@@ -134,6 +156,22 @@ const EditDialog = () => {
             </FormControl>
           </StyledContentBox>
         </StyledInfoBox>
+        {isSingleType && (
+          <>
+            <MarginBox />
+            <StyledInfoBox>
+              <StyledLabelBox>
+                <CalendarMonthOutlinedIcon />
+              </StyledLabelBox>
+              <StyledContentBox>
+                <MobileDatePicker
+                  value={todoDate}
+                  onChange={(value) => setTodoDate(value)}
+                />
+              </StyledContentBox>
+            </StyledInfoBox>
+          </>
+        )}
       </DialogContent>
       <Divider />
       <DialogActions>

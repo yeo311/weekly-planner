@@ -25,12 +25,11 @@ export function updateFirebaseRepetitiveTodosIsCompleted(
 }
 
 export function updateTodoItem(uid: string, todo: TotalTodo) {
-  const collectionName =
-    !todo.repeatingType || todo.repeatingType === 'single'
-      ? uid
-      : `${uid}_repeat`;
+  const isSingleType = !todo.repeatingType || todo.repeatingType === 'single';
+  const collectionName = isSingleType ? uid : `${uid}_repeat`;
   return updateDoc(doc(db, collectionName, todo.id as string), {
     subject: todo.subject,
     color: todo.color,
+    ...(isSingleType && { date: todo.date }), // single type 투두의 경우에만 date를 업데이트
   });
 }

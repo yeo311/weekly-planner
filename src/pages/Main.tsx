@@ -1,12 +1,12 @@
 import { Container, CssBaseline, Stack } from '@mui/material';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import AddModal from '../components/modals/AddModal';
 import DayBox from '../components/DayBox';
 import DateControllPanel from '../components/DateControllPanel';
 import { userState } from '../recoil/user';
-import { currentWeekDaysState } from '../recoil/date';
+import { currentWeekDaysState, todayState } from '../recoil/date';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import Dialogs from '../components/dialogs/Dialogs';
@@ -18,6 +18,7 @@ function Main() {
   const currentWeekDays = useRecoilValue(currentWeekDaysState);
   const { fetchTodosByRange } = useTodo();
   const user = useRecoilValue(userState);
+  const setToday = useSetRecoilState(todayState);
 
   useEffect(() => {
     if (loginData.isLogin) return;
@@ -37,6 +38,18 @@ function Main() {
       fetchTodosByRange();
     }
   }, [currentWeekDays, user.uid]);
+
+  useEffect(() => {
+    const visibilityChangeListner = () => {
+      if (document.visibilityState === 'visible') {
+        setToday(new Date());
+      }
+    };
+    window.addEventListener('visibilitychange', visibilityChangeListner);
+    return () => {
+      window.removeEventListener('visibilitychange', visibilityChangeListner);
+    };
+  }, []);
 
   return (
     <>

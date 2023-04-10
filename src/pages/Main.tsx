@@ -1,7 +1,7 @@
 import { Container, CssBaseline, Stack } from '@mui/material';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import AddModal from '../components/modals/AddModal';
 import DayBox from '../components/DayBox';
 import DateControllPanel from '../components/DateControllPanel';
@@ -11,26 +11,25 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import Dialogs from '../components/dialogs/Dialogs';
 import useTodo from '../hooks/useTodo';
+import { auth } from '../firebase/init';
 
 function Main() {
   const navigate = useNavigate();
-  const [loginData, setLoginData] = useRecoilState(userState);
+  const setLoginData = useSetRecoilState(userState);
   const currentWeekDays = useRecoilValue(currentWeekDaysState);
   const { fetchTodosByRange } = useTodo();
   const user = useRecoilValue(userState);
   const setToday = useSetRecoilState(todayState);
 
   useEffect(() => {
-    if (loginData.isLogin) return;
-    const uid =
-      window.localStorage.getItem('uid') ||
-      window.sessionStorage.getItem('uid');
-
-    if (uid) {
-      setLoginData({ isLogin: true, uid });
-    } else {
-      navigate('/login');
-    }
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        setLoginData({ isLogin: true, uid: user.uid });
+      } else {
+        setLoginData({ isLogin: false, uid: '' });
+        navigate('/login');
+      }
+    });
   }, []);
 
   useEffect(() => {

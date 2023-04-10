@@ -2,43 +2,26 @@ import {
   Alert,
   Box,
   Button,
-  Checkbox,
   Container,
-  FormControlLabel,
-  FormGroup,
   TextField,
   Typography,
 } from '@mui/material';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSetRecoilState } from 'recoil';
 import MarginBox from '../components/MarginBox';
-import { userState } from '../recoil/user';
 import { auth } from '../firebase/init';
 
 export default function Login() {
-  const setLoginState = useSetRecoilState(userState);
   const navigate = useNavigate();
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [isError, setIsError] = useState<boolean>(false);
-  const [isKeepLogin, setIsKeepLogin] = useState<boolean>(false);
 
   const handleSubmit = async () => {
     if (!email || !password) return;
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      setLoginState({ isLogin: true, uid: userCredential.user.uid });
-      if (isKeepLogin) {
-        window.localStorage.setItem('uid', userCredential.user.uid);
-      } else {
-        window.sessionStorage.setItem('uid', userCredential.user.uid);
-      }
+      await signInWithEmailAndPassword(auth, email, password);
       navigate('/');
     } catch (error) {
       console.error(error);
@@ -85,18 +68,7 @@ export default function Login() {
             }}
           />
         </div>
-        <MarginBox />
-        <FormGroup>
-          <FormControlLabel
-            control={
-              <Checkbox
-                value={isKeepLogin}
-                onChange={(_, v) => setIsKeepLogin(v)}
-              />
-            }
-            label="로그인 유지"
-          />
-        </FormGroup>
+
         {isError && (
           <>
             <MarginBox />

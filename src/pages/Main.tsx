@@ -30,13 +30,13 @@ function Main() {
         navigate('/login');
       }
     });
-  }, []);
+  }, [navigate, setLoginData]);
 
   useEffect(() => {
     if (user.uid && currentWeekDays.length > 0) {
       fetchTodosByRange();
     }
-  }, [currentWeekDays, user.uid]);
+  }, [currentWeekDays.length, user.uid, fetchTodosByRange]);
 
   useEffect(() => {
     const visibilityChangeListner = () => {
@@ -48,7 +48,7 @@ function Main() {
     return () => {
       window.removeEventListener('visibilitychange', visibilityChangeListner);
     };
-  }, []);
+  }, [setToday]);
 
   return (
     <>

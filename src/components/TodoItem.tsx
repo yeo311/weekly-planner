@@ -14,7 +14,7 @@ interface TodoItemProps {
 }
 
 const TodoItem = ({ todo }: TodoItemProps) => {
-  const { updateIsCompleted, fetchTodoById } = useTodo();
+  const { updateTodo, fetchTodoById } = useTodo();
   const setDialog = useSetRecoilState(dialogState);
 
   const openDialog = () => {
@@ -27,11 +27,9 @@ const TodoItem = ({ todo }: TodoItemProps) => {
   ) => {
     // e.preventDefault();
     e.stopPropagation();
-    updateIsCompleted(todo.id, checked, todo.repeatingType, todo.date).then(
-      () => {
-        fetchTodoById(todo.id, todo.repeatingType);
-      }
-    );
+    updateTodo(todo.id, checked, todo.repeatingType, todo.date).then(() => {
+      fetchTodoById(todo.id, todo.repeatingType);
+    });
   };
 
   const labelId = `todo-item-label-${todo.id}`;

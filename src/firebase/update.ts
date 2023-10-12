@@ -5,10 +5,12 @@ import { db } from './init';
 export function updateFirebaseTodoItem(
   uid: string,
   todoId: string,
-  isCompleted: boolean
+  isCompleted: boolean,
+  sortIdx?: number
 ) {
   return updateDoc(doc(db, uid, todoId), {
     isCompleted,
+    ...(sortIdx && { sortIdx }),
   });
 }
 
@@ -16,11 +18,13 @@ export function updateFirebaseRepetitiveTodosIsCompleted(
   uid: string,
   todoId: string,
   isCompleted: boolean,
-  date: Date
+  date: Date,
+  sortIdx?: number
 ) {
   const time = date.getTime();
   return updateDoc(doc(db, `${uid}_repeat`, todoId), {
     completedDates: isCompleted ? arrayUnion(time) : arrayRemove(time),
+    ...(sortIdx && { [`sortIdxList.${time}`]: sortIdx }),
   });
 }
 

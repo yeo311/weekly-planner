@@ -41,7 +41,7 @@ const AddModal = () => {
     setRepeatingType('single');
     setEndDate(null);
   };
-  const { fetchTodoById } = useTodo();
+  const { fetchTodoById, getTodos } = useTodo();
 
   const loginData = useRecoilValue(userState);
 
@@ -60,6 +60,7 @@ const AddModal = () => {
     }
     try {
       setIsLoading(true);
+      const curTodos = getTodos(modalState.targetDate);
       const docRef = await addTodoItem(loginData.uid, {
         date: modalState.targetDate,
         subject: value,
@@ -76,6 +77,7 @@ const AddModal = () => {
             : repeatingType === 'weekly'
             ? modalState.targetDate.getDay()
             : 0,
+        sortIdx: curTodos.length,
       });
 
       fetchTodoById(docRef.id, repeatingType);

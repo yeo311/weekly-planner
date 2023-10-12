@@ -3,19 +3,27 @@ import { TotalTodo } from '../types/todo';
 import { db } from './init';
 
 function addSingleTodo(uid: string, todo: TotalTodo) {
-  const { subject, date, color, repeatingType } = todo;
+  const { subject, date, color, repeatingType, sortIdx } = todo;
   return addDoc(collection(db, uid), {
     subject,
     date: Timestamp.fromDate(date as Date),
     isCompleted: false,
     color,
     repeatingType,
+    sortIdx,
   });
 }
 
 function addRepetitiveTodo(uid: string, todo: TotalTodo) {
-  const { startDate, endDate, repeatingType, repeatingNumber, subject, color } =
-    todo;
+  const {
+    startDate,
+    endDate,
+    repeatingType,
+    repeatingNumber,
+    subject,
+    color,
+    sortIdx,
+  } = todo;
   return addDoc(collection(db, `${uid}_repeat`), {
     startDate: Timestamp.fromDate(startDate as Date),
     endDate: endDate ? Timestamp.fromDate(endDate as Date) : null,
@@ -25,6 +33,7 @@ function addRepetitiveTodo(uid: string, todo: TotalTodo) {
     color,
     completedDates: [],
     deletedDates: [],
+    sortIdxList: { [`${(startDate as Date).getTime()}`]: sortIdx },
   });
 }
 

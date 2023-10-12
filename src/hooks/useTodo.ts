@@ -19,13 +19,14 @@ import {
 import { currentWeekDaysState } from '../recoil/date';
 import { checkIfRepeatTodoAreIncludedInThisDate } from '../utils/date';
 import { RepetitiveTodoToSingleTodo } from '../utils/todo';
+import { useCallback } from 'react';
 
 export default function useTodo() {
   const { uid } = useRecoilValue(userState);
   const [todos, setTodos] = useRecoilState(todoListState);
   const currentWeekDays = useRecoilValue(currentWeekDaysState);
 
-  const fetchTodosByRange = async () => {
+  const fetchTodosByRange = useCallback(async () => {
     if (!currentWeekDays.length) {
       console.error('Current Week not set');
     }
@@ -55,20 +56,21 @@ export default function useTodo() {
       const includeTodos = repetitiveTodos
         .filter((todo) => checkIfRepeatTodoAreIncludedInThisDate(day, todo))
         .map((todo) => RepetitiveTodoToSingleTodo(todo, day));
+
       if (!weeklyTodos[day.getTime()]) {
+        includeTodos.sort((a, b) => a.sortIdx - b.sortIdx);
         weeklyTodos[day.getTime()] = includeTodos;
       } else {
-        weeklyTodos[day.getTime()] = [
-          ...weeklyTodos[day.getTime()],
-          ...includeTodos,
-        ];
+        const newTodos = [...weeklyTodos[day.getTime()], ...includeTodos];
+        newTodos.sort((a, b) => a.sortIdx - b.sortIdx);
+        weeklyTodos[day.getTime()] = newTodos;
       }
     });
-
+    console.log(weeklyTodos);
     setTodos((prev) => {
       return { ...prev, ...weeklyTodos };
     });
-  };
+  }, [currentWeekDays, setTodos, uid]);
 
   const fetchTodoById = async (id: string, type: RepeatingTypes) => {
     if (!type || type === 'single') {
@@ -114,20 +116,22 @@ export default function useTodo() {
     return todos[date.getTime()];
   };
 
-  const updateIsCompleted = (
+  const updateTodo = (
     todoId: string,
     isCompleted: boolean,
     repeatingType: RepeatingTypes,
-    date: Date
+    date: Date,
+    sortIdx?: number
   ) => {
     if (!repeatingType || repeatingType === 'single') {
-      return updateFirebaseTodoItem(uid, todoId, isCompleted);
+      return updateFirebaseTodoItem(uid, todoId, isCompleted, sortIdx);
     }
     return updateFirebaseRepetitiveTodosIsCompleted(
       uid,
       todoId,
       isCompleted,
-      date
+      date,
+      sortIdx
     );
   };
 
@@ -143,7 +147,7 @@ export default function useTodo() {
 
   return {
     getTodos,
-    updateIsCompleted,
+    updateTodo,
     deleteTodo,
     fetchTodosByRange,
     fetchTodoById,

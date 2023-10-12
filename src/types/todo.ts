@@ -23,6 +23,7 @@ export interface Todo {
   isCompleted: boolean;
   repeatingType: RepeatingTypes;
   color: TodoColors;
+  sortIdx: number;
 }
 
 export interface RepetitiveTodo {
@@ -35,6 +36,7 @@ export interface RepetitiveTodo {
   completedDates: number[];
   deletedDates: number[];
   color: TodoColors;
+  sortIdxList: Record<string, number>;
 }
 
 export type TotalTodo = Partial<Todo> & Partial<RepetitiveTodo>;

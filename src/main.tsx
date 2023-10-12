@@ -1,4 +1,3 @@
-import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { RecoilRoot } from 'recoil';
@@ -23,11 +22,9 @@ const router = createBrowserRouter([
 ]);
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <React.StrictMode>
-    <RecoilRoot>
-      <RecoilURLSyncJSON location={{ part: 'queryParams' }}>
-        <RouterProvider router={router} />
-      </RecoilURLSyncJSON>
-    </RecoilRoot>
-  </React.StrictMode>
+  <RecoilRoot>
+    <RecoilURLSyncJSON location={{ part: 'queryParams' }}>
+      <RouterProvider router={router} />
+    </RecoilURLSyncJSON>
+  </RecoilRoot>
 );

@@ -46,54 +46,28 @@ const DayBox = ({ date, width }: DayProps) => {
     if (source.index >= todos.length || destination.index >= todos.length)
       return;
 
-    const newTodos = todos
-      .map((todo, index) => {
-        if (index === source.index) {
-          return { ...todo, sortIdx: destination.index };
-        } else if (index === destination.index) {
-          return { ...todo, sortIdx: source.index };
-        } else if (todo.sortIdx === 999 || todo.sortIdx === undefined) {
-          return { ...todo, sortIdx: index };
-        }
-        return todo;
-      })
-      .sort((a, b) => a.sortIdx - b.sortIdx);
+    const changedTodo = todos[source.index];
+    const changedTodos = todos.filter((todo) => todo.id !== changedTodo.id);
+    changedTodos.splice(destination.index, 0, changedTodo);
+
+    const newTodos = changedTodos.map((todo, idx) => {
+      return { ...todo, sortIdx: idx };
+    });
     setTodos((prev) => ({ ...prev, [date.getTime()]: newTodos }));
 
     const promises: Promise<void>[] = [];
-    todos.forEach((todo, index) => {
-      if (index === source.index) {
-        promises.push(
-          updateTodo(
-            todo.id,
-            todo.isCompleted,
-            todo.repeatingType,
-            todo.date,
-            destination.index
-          )
-        );
-      } else if (index === destination.index) {
-        promises.push(
-          updateTodo(
-            todo.id,
-            todo.isCompleted,
-            todo.repeatingType,
-            todo.date,
-            source.index
-          )
-        );
-      } else if (todo.sortIdx === 999 || todo.sortIdx === undefined) {
-        promises.push(
-          updateTodo(
-            todo.id,
-            todo.isCompleted,
-            todo.repeatingType,
-            todo.date,
-            index
-          )
-        );
-      }
+    newTodos.forEach((todo) => {
+      promises.push(
+        updateTodo(
+          todo.id,
+          todo.isCompleted,
+          todo.repeatingType,
+          todo.date,
+          todo.sortIdx
+        )
+      );
     });
+
     try {
       await Promise.all(promises);
     } catch (e) {

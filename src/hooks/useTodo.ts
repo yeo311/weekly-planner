@@ -66,7 +66,7 @@ export default function useTodo() {
         weeklyTodos[day.getTime()] = newTodos;
       }
     });
-    console.log(weeklyTodos);
+
     setTodos((prev) => {
       return { ...prev, ...weeklyTodos };
     });
@@ -81,7 +81,10 @@ export default function useTodo() {
           return { ...prev, [key]: [todo] };
         } else {
           const afterRemove = prev[key].filter((t) => t.id !== id);
-          return { ...prev, [key]: [...afterRemove, todo] };
+          return {
+            ...prev,
+            [key]: [...afterRemove, todo].sort((a, b) => a.sortIdx - b.sortIdx),
+          };
         }
       });
     } else {
@@ -101,9 +104,13 @@ export default function useTodo() {
         }
         const singleTodo = RepetitiveTodoToSingleTodo(repeatTodo, day);
         if (todos[key].findIndex((t) => t.id === id) > -1) {
-          newData[key] = todos[key].map((t) => (t.id === id ? singleTodo : t));
+          newData[key] = todos[key]
+            .map((t) => (t.id === id ? singleTodo : t))
+            .sort((a, b) => a.sortIdx - b.sortIdx);
         } else {
-          newData[key] = [...todos[key], singleTodo];
+          newData[key] = [...todos[key], singleTodo].sort(
+            (a, b) => a.sortIdx - b.sortIdx
+          );
         }
       });
       setTodos((prev) => {

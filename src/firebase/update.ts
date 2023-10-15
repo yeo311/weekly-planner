@@ -10,7 +10,7 @@ export function updateFirebaseTodoItem(
 ) {
   return updateDoc(doc(db, uid, todoId), {
     isCompleted,
-    ...(sortIdx && { sortIdx }),
+    ...(sortIdx !== undefined && { sortIdx }),
   });
 }
 
@@ -24,7 +24,7 @@ export function updateFirebaseRepetitiveTodosIsCompleted(
   const time = date.getTime();
   return updateDoc(doc(db, `${uid}_repeat`, todoId), {
     completedDates: isCompleted ? arrayUnion(time) : arrayRemove(time),
-    ...(sortIdx && { [`sortIdxList.${time}`]: sortIdx }),
+    ...(sortIdx !== undefined && { [`sortIdxList.${time}`]: sortIdx }),
   });
 }
 

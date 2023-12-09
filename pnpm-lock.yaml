@@ -35,6 +35,9 @@ dependencies:
   '@recoiljs/refine':
     specifier: ^0.1.1
     version: 0.1.1
+  '@tabler/icons-react':
+    specifier: ^2.43.0
+    version: 2.43.0(react@18.2.0)
   dayjs:
     specifier: ^1.11.7
     version: 1.11.10
@@ -1598,6 +1601,20 @@ packages:
   /@remix-run/router@1.9.0:
     resolution: {integrity: sha512-bV63itrKBC0zdT27qYm6SDZHlkXwFL1xMBuhkn+X7l0+IIhNaH5wuuvZKp6eKhCD4KFhujhfhCT1YxXW6esUIA==}
     engines: {node: '>=14.0.0'}
+    dev: false
+
+  /@tabler/icons-react@2.43.0(react@18.2.0):
+    resolution: {integrity: sha512-D0ZqgD8pbbe8vENLunoIWH4zmdcG4N/B5Xsx2Nta2oVsoftva9uL+9Ci/J9pHsZzkl+jXFdo3xAlGAuWfaTK0w==}
+    peerDependencies:
+      react: ^16.5.1 || ^17.0.0 || ^18.0.0
+    dependencies:
+      '@tabler/icons': 2.43.0
+      prop-types: 15.8.1
+      react: 18.2.0
+    dev: false
+
+  /@tabler/icons@2.43.0:
+    resolution: {integrity: sha512-afToJMJj31Q9Put1/saemluLBvWhgzsF59QM/mJZZ7LLHW12ViumyQIwA31SRCH/HsYBEoRp2qHFt0QwIFWDFw==}
     dev: false
 
   /@types/babel__core@7.20.2:

@@ -2,7 +2,7 @@ import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { RecoilRoot } from 'recoil';
 import Main from './pages/Main';
-import Login from './pages/Login';
+import LoginPage from './pages/LoginPage';
 
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
@@ -20,11 +20,13 @@ const router = createBrowserRouter([
   },
   {
     path: '/login',
-    element: <Login />,
+    element: <LoginPage />,
   },
 ]);
 
-const theme = createTheme({});
+const theme = createTheme({
+  fontFamily: 'Noto Sans KR, sans-serif',
+});
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <RecoilRoot>

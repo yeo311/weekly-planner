@@ -10,6 +10,9 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import { RecoilURLSyncJSON } from 'recoil-sync';
 
+import '@mantine/core/styles.css';
+import { createTheme, MantineProvider } from '@mantine/core';
+
 const router = createBrowserRouter([
   {
     path: '/',
@@ -21,10 +24,14 @@ const router = createBrowserRouter([
   },
 ]);
 
+const theme = createTheme({});
+
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <RecoilRoot>
     <RecoilURLSyncJSON location={{ part: 'queryParams' }}>
-      <RouterProvider router={router} />
+      <MantineProvider theme={theme}>
+        <RouterProvider router={router} />
+      </MantineProvider>
     </RecoilURLSyncJSON>
   </RecoilRoot>
 );

@@ -11,6 +11,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import SignUpPage from './pages/SignUpPage';
 import { AuthContextProvider } from './contexts/AuthContext';
 
+import 'swiper/css';
+
 const router = createBrowserRouter([
   {
     path: '/',

@@ -1,4 +1,5 @@
 import { RepetitiveTodo } from '../types/todo';
+import * as dayjs from 'dayjs';
 
 export function getThisWeekDateArray(date?: Date) {
   const currentDay = date
@@ -15,6 +16,27 @@ export function getThisWeekDateArray(date?: Date) {
       new Date(Date.UTC(thisYear, thisMonth, thisDate + (i - calcWeekCount)))
   );
   return thisWeekDateArray;
+}
+
+/**
+ * 한 주의 날짜 배열을 반환합니다.
+ * @param weekOffset - 현재 주로부터의 주 오프셋입니다. 기본값은 0입니다.
+ * @returns 날짜 배열입니다.
+ */
+export function getWeekDays(weekOffset = 0) {
+  const today = dayjs();
+  const startOfWeek = today.startOf('week').add(1 + 7 * weekOffset, 'day');
+  const endOfWeek = today.endOf('week').add(1 + 7 * weekOffset, 'day');
+  const days = [];
+
+  let day = startOfWeek;
+
+  while (day <= endOfWeek) {
+    days.push(day);
+    day = day.add(1, 'day');
+  }
+
+  return days;
 }
 
 export const dayArr = ['일', '월', '화', '수', '목', '금', '토'];

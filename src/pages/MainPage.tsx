@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
-import { Loader } from '@mantine/core';
+import { Divider, Loader } from '@mantine/core';
 import HeaderSection from '../sections/HeaderSection';
+import MainSection from '../sections/MainSection';
 
 const MainPage = () => {
   const auth = useAuth();
@@ -16,7 +17,8 @@ const MainPage = () => {
   return (
     <>
       <HeaderSection />
-      <div>Contents</div>
+      <Divider color="gray.2" />
+      <MainSection />
     </>
   );
 };

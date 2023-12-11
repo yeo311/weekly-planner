@@ -14,6 +14,7 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../firebase/init';
+import Logo from '../components/Logo';
 
 const userIcon = <IconUser size={20} />;
 const lockIcon = <IconLock size={20} />;
@@ -44,6 +45,12 @@ const LoginPage = () => {
     loginMutation.mutate();
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleSubmit();
+    }
+  };
+
   return (
     <Center h="100vh">
       <Flex
@@ -54,26 +61,29 @@ const LoginPage = () => {
         align={'center'}
         gap="md"
       >
-        <Title ff="'Dancing Script', cursive">Weekly Planner</Title>
+        <Logo />
         <Text c="gray" size="sm">
           위클리 플래너에 로그인하세요
         </Text>
         <TextInput
           type="email"
+          name="email"
+          value={params.email}
+          onChange={handleChange}
           size="md"
           leftSection={userIcon}
           placeholder="이메일을 입력하세요."
           w="100%"
-          value={params.email}
-          onChange={handleChange}
         />
         <PasswordInput
           size="md"
+          name="password"
+          value={params.password}
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
           leftSection={lockIcon}
           placeholder="비밀번호를 입력하세요."
           w="100%"
-          value={params.password}
-          onChange={handleChange}
         />
         <Button fullWidth size="md" onClick={handleSubmit}>
           로그인

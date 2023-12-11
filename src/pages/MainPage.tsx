@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 import { Loader } from '@mantine/core';
+import HeaderSection from '../sections/HeaderSection';
 
 const MainPage = () => {
   const auth = useAuth();
@@ -12,7 +13,12 @@ const MainPage = () => {
     navigate('/login');
   }
 
-  return <div>Main</div>;
+  return (
+    <>
+      <HeaderSection />
+      <div>Contents</div>
+    </>
+  );
 };
 
 export default MainPage;

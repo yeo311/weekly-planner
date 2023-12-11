@@ -2,7 +2,6 @@ import {
   Button,
   PasswordInput,
   TextInput,
-  Title,
   Text,
   Center,
   Flex,
@@ -14,6 +13,7 @@ import { auth } from '../firebase/init';
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { FirebaseError } from 'firebase/app';
+import Logo from '../components/Logo';
 
 const userIcon = <IconUser size={20} />;
 const lockIcon = <IconLock size={20} />;
@@ -78,13 +78,14 @@ const SignUpPage = () => {
         align={'center'}
         gap="md"
       >
-        <Title ff="'Dancing Script', cursive">Weekly Planner</Title>
+        <Logo />
         <Text c="gray" size="sm">
           위클리 플래너에 회원가입하세요.
         </Text>
         <TextInput
           type="email"
           name="email"
+          value={params.email}
           onChange={handleChange}
           size="md"
           leftSection={userIcon}
@@ -93,6 +94,7 @@ const SignUpPage = () => {
         />
         <PasswordInput
           name="password"
+          value={params.password}
           onChange={handleChange}
           size="md"
           leftSection={lockIcon}
@@ -101,6 +103,7 @@ const SignUpPage = () => {
         />
         <PasswordInput
           name="passwordConfirm"
+          value={params.passwordConfirm}
           onChange={handleChange}
           size="md"
           leftSection={lockIcon}

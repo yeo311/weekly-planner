@@ -6,7 +6,7 @@ import {
   Timestamp,
   updateDoc,
 } from 'firebase/firestore';
-import { RepetitiveTodoDeleteTypes, Todo } from '../types/todo';
+import { RepetitiveTaskDeleteTypes, Task } from '../types/todo';
 import { db } from './init';
 
 export function deleteFirebaseTodo(uid: string, todoId: string) {
@@ -15,8 +15,8 @@ export function deleteFirebaseTodo(uid: string, todoId: string) {
 
 export function deleteFirebaseRepetitiveTodo(
   uid: string,
-  todo: Todo,
-  repetitiveTodoDeleteType: RepetitiveTodoDeleteTypes
+  todo: Task,
+  repetitiveTodoDeleteType: RepetitiveTaskDeleteTypes
 ) {
   const ref = doc(db, `${uid}_repeat`, todo.id);
   if (repetitiveTodoDeleteType === 'all') {

@@ -1,5 +1,4 @@
-import { RepetitiveTodo } from '../types/todo';
-import * as dayjs from 'dayjs';
+import dayjs, { type Dayjs } from 'dayjs';
 
 export function getThisWeekDateArray(date?: Date) {
   const currentDay = date
@@ -19,9 +18,9 @@ export function getThisWeekDateArray(date?: Date) {
 }
 
 /**
- * 한 주의 날짜 배열을 반환합니다.
- * @param weekOffset - 현재 주로부터의 주 오프셋입니다. 기본값은 0입니다.
- * @returns 날짜 배열입니다.
+ * 한 주의 날짜 배열을 반환
+ * @param weekOffset - 현재 주로부터의 주 오프셋. 기본값은 0.
+ * @returns 날짜 배열
  */
 export function getWeekDays(weekOffset = 0) {
   const today = dayjs();
@@ -41,41 +40,6 @@ export function getWeekDays(weekOffset = 0) {
 
 export const dayArr = ['일', '월', '화', '수', '목', '금', '토'];
 
-export function checkIfRepeatTodoAreIncludedInThisDate(
-  date: Date,
-  todo: RepetitiveTodo
-) {
-  if (todo.startDate.getTime() > date.getTime()) return false;
-  if (todo.endDate.getTime() < date.getTime()) return false;
-
-  if (
-    todo.repeatingType === 'weekly' &&
-    todo.repeatingNumber !== date.getDay()
-  ) {
-    return false;
-  }
-
-  if (
-    todo.repeatingType === 'monthly' &&
-    todo.repeatingNumber !== date.getDate()
-  ) {
-    return false;
-  }
-
-  if (
-    todo.repeatingType === 'weekdays' &&
-    (date.getDay() === 0 || date.getDay() === 6)
-  ) {
-    return false;
-  }
-
-  if (!!todo.deletedDates && todo.deletedDates.includes(date.getTime())) {
-    return false;
-  }
-
-  return true;
-}
-
 export function isSameDate(date1: Date, date2: Date) {
   return (
     date1.getDate() === date2.getDate() &&
@@ -83,3 +47,9 @@ export function isSameDate(date1: Date, date2: Date) {
     date1.getFullYear() === date2.getFullYear()
   );
 }
+
+export const TASK_KEY_FORMAT = 'YYYY-MM-DD';
+
+export const formatKey = (date: Dayjs) => date.format(TASK_KEY_FORMAT);
+
+export const toUnix = (date: Dayjs) => date.unix() * 1000;

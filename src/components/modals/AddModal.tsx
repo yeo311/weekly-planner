@@ -18,7 +18,7 @@ import useTodo from '../../hooks/useTodo';
 import { userState } from '../../recoil/user';
 import { addModalState } from '../../recoil/modal';
 import { addTodoItem } from '../../firebase/create';
-import { RepeatingTypes, TodoColors } from '../../types/todo';
+import { RepeatingTypes, TaskColors } from '../../types/todo';
 import { dayArr } from '../../utils/date';
 import { MobileDatePicker } from '@mui/x-date-pickers';
 import MarginBox from '../MarginBox';
@@ -34,7 +34,7 @@ const AddModal = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [repeatingType, setRepeatingType] = useState<RepeatingTypes>('single');
   const [endDate, setEndDate] = useState<Dayjs | null>(null);
-  const [color, setColor] = useState<TodoColors>(TodoColors.Green);
+  const [color, setColor] = useState<TaskColors>(TaskColors.Green);
 
   const closeModal = () => {
     setModalState((prev) => ({ ...prev, isShowModal: false }));
@@ -50,7 +50,7 @@ const AddModal = () => {
   };
 
   const handleColorChange = (event: SelectChangeEvent) => {
-    setColor(event.target.value as TodoColors);
+    setColor(event.target.value as TaskColors);
   };
 
   const handleClickSubmit = async () => {
@@ -122,10 +122,10 @@ const AddModal = () => {
             value={color}
             onChange={handleColorChange}
           >
-            {(Object.keys(TodoColors) as Array<keyof typeof TodoColors>).map(
+            {(Object.keys(TaskColors) as Array<keyof typeof TaskColors>).map(
               (key) => (
-                <MenuItem key={TodoColors[key]} value={TodoColors[key]}>
-                  <Circle sx={{ color: TodoColors[key] }} />
+                <MenuItem key={TaskColors[key]} value={TaskColors[key]}>
+                  <Circle sx={{ color: TaskColors[key] }} />
                 </MenuItem>
               )
             )}

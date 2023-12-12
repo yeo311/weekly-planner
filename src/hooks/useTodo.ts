@@ -1,7 +1,7 @@
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { userState } from '../recoil/user';
 import { todoListState } from '../recoil/todo';
-import { RepeatingTypes, RepetitiveTodoDeleteTypes, Todo } from '../types/todo';
+import { RepeatingTypes, RepetitiveTaskDeleteTypes, Task } from '../types/todo';
 import {
   getRepetitiveTodoById,
   getRepetitiveTodosByDateRange,
@@ -36,7 +36,7 @@ export default function useTodo() {
       currentWeekDays[0],
       currentWeekDays[currentWeekDays.length - 1]
     );
-    const weeklyTodos = todos.reduce<Record<number, Todo[]>>((acc, cur) => {
+    const weeklyTodos = todos.reduce<Record<number, Task[]>>((acc, cur) => {
       const key = cur.date.getTime();
       if (!acc[key]) {
         acc[key] = [cur];
@@ -143,8 +143,8 @@ export default function useTodo() {
   };
 
   const deleteTodo = (
-    todo: Todo,
-    repetitiveTodoDeleteType: RepetitiveTodoDeleteTypes
+    todo: Task,
+    repetitiveTodoDeleteType: RepetitiveTaskDeleteTypes
   ) => {
     if (!todo.repeatingType || todo.repeatingType === 'single') {
       return deleteFirebaseTodo(uid, todo.id);

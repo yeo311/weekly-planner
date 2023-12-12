@@ -14,7 +14,7 @@ import DeleteButton from '../buttons/DeleteButton';
 import EditButton from '../buttons/EditButton';
 import ColorLensOutlinedIcon from '@mui/icons-material/ColorLensOutlined';
 import { Circle } from '@mui/icons-material';
-import { TodoColors } from '../../types/todo';
+import { TaskColors } from '../../types/todo';
 import MarginBox from '../MarginBox';
 
 const StyledIconBox = styled.div`
@@ -75,7 +75,7 @@ const InfoDialog = () => {
             <ColorLensOutlinedIcon />
           </StyledLabelBox>
           <StyledContentBox>
-            <Circle sx={{ color: color || TodoColors.Green }} />
+            <Circle sx={{ color: color || TaskColors.Green }} />
           </StyledContentBox>
         </StyledInfoBox>
       </DialogContent>

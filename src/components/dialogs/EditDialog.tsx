@@ -18,7 +18,7 @@ import DeleteButton from '../buttons/DeleteButton';
 import MarginBox from '../MarginBox';
 import ColorLensOutlinedIcon from '@mui/icons-material/ColorLensOutlined';
 import { Circle } from '@mui/icons-material';
-import { TodoColors } from '../../types/todo';
+import { TaskColors } from '../../types/todo';
 import { useEffect, useState } from 'react';
 import { updateTodoItem } from '../../firebase/update';
 import { userState } from '../../recoil/user';
@@ -50,8 +50,8 @@ const StyledContentBox = styled.div`
 const EditDialog = () => {
   const [{ isOpen, type, targetTodo }, setDialog] = useRecoilState(dialogState);
   const resetDialogState = useResetRecoilState(dialogState);
-  const [selectColor, setSelectColor] = useState<TodoColors>(
-    targetTodo?.color || TodoColors.Green
+  const [selectColor, setSelectColor] = useState<TaskColors>(
+    targetTodo?.color || TaskColors.Green
   );
   const [subject, setSubject] = useState<string>(targetTodo?.subject || '');
   const user = useRecoilValue(userState);
@@ -65,8 +65,8 @@ const EditDialog = () => {
 
   const handleClickDeleteButton = () => changeDialogTypeTo('delete');
 
-  const handleChangeColor = (event: SelectChangeEvent<TodoColors>) => {
-    setSelectColor(event.target.value as TodoColors);
+  const handleChangeColor = (event: SelectChangeEvent<TaskColors>) => {
+    setSelectColor(event.target.value as TaskColors);
   };
 
   const handleChangeSubject = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -101,7 +101,7 @@ const EditDialog = () => {
   useEffect(() => {
     if (!targetTodo) return;
     setSubject(targetTodo.subject);
-    setSelectColor(targetTodo.color || TodoColors.Green);
+    setSelectColor(targetTodo.color || TaskColors.Green);
     setTodoDate(dayjs(targetTodo.date));
   }, [targetTodo]);
 
@@ -146,10 +146,10 @@ const EditDialog = () => {
                 onChange={handleChangeColor}
               >
                 {(
-                  Object.keys(TodoColors) as Array<keyof typeof TodoColors>
+                  Object.keys(TaskColors) as Array<keyof typeof TaskColors>
                 ).map((key) => (
-                  <MenuItem key={TodoColors[key]} value={TodoColors[key]}>
-                    <Circle sx={{ color: TodoColors[key] }} />
+                  <MenuItem key={TaskColors[key]} value={TaskColors[key]}>
+                    <Circle sx={{ color: TaskColors[key] }} />
                   </MenuItem>
                 ))}
               </Select>

@@ -1,7 +1,7 @@
 import { atom } from 'recoil';
-import { Todo } from '../types/todo';
+import { Task } from '../types/todo';
 
-export const todoListState = atom<Record<number, Todo[]>>({
+export const todoListState = atom<Record<number, Task[]>>({
   key: 'todoListState',
   default: {},
 });

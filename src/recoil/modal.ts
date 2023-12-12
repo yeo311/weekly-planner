@@ -1,5 +1,5 @@
 import { atom } from 'recoil';
-import { Todo } from '../types/todo';
+import { Task } from '../types/todo';
 
 export type DialogTypes = 'info' | 'delete' | 'edit';
 
@@ -19,7 +19,7 @@ export const addModalState = atom<AddModalState>({
 interface DialogState {
   isOpen: boolean;
   type: DialogTypes;
-  targetTodo: Todo | null;
+  targetTodo: Task | null;
 }
 
 export const dialogState = atom<DialogState>({

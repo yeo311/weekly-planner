@@ -7,8 +7,13 @@ type WeekDays = {
   days: dayjs.Dayjs[];
 };
 
-type WeekStore = {
+type WeekState = {
   weekDays: WeekDays[];
+  activeIndex: number;
+};
+
+type WeekAction = {
+  setActiveIndex: (index: number) => void;
   addNext: () => void;
   addPrev: () => void;
 };
@@ -21,8 +26,12 @@ const getDefaultWeekDays = (): WeekDays[] => {
   ];
 };
 
-export const useWeekStore = create<WeekStore>((set) => ({
+export const useWeekStore = create<WeekState & WeekAction>((set) => ({
   weekDays: getDefaultWeekDays(),
+  activeIndex: 1,
+  setActiveIndex: (index: number) => {
+    set({ activeIndex: index });
+  },
   addNext: () => {
     set((state) => ({
       weekDays: [

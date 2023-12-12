@@ -14,14 +14,14 @@ import { useState } from 'react';
 import { useRecoilValue, useResetRecoilState } from 'recoil';
 import useTodo from '../../hooks/useTodo';
 import { dialogState } from '../../recoil/modal';
-import { RepetitiveTodoDeleteTypes } from '../../types/todo';
+import { RepetitiveTaskDeleteTypes } from '../../types/todo';
 import MarginBox from '../MarginBox';
 
 const DeleteDialog = () => {
   const dialog = useRecoilValue(dialogState);
   const resetDialogState = useResetRecoilState(dialogState);
   const [repetitiveTodoDeleteType, setRepetitiveTodoDeleteType] =
-    useState<RepetitiveTodoDeleteTypes>('only');
+    useState<RepetitiveTaskDeleteTypes>('only');
 
   const { deleteTodo, fetchTodoById, setTodos } = useTodo();
 
@@ -74,7 +74,7 @@ const DeleteDialog = () => {
               <RadioGroup
                 value={repetitiveTodoDeleteType}
                 onChange={(_, v) => {
-                  setRepetitiveTodoDeleteType(v as RepetitiveTodoDeleteTypes);
+                  setRepetitiveTodoDeleteType(v as RepetitiveTaskDeleteTypes);
                 }}
               >
                 <FormControlLabel

@@ -1,4 +1,4 @@
-import { RepetitiveTodo, Todo } from '../types/todo';
+import { RepetitiveTask, Task } from '../types/todo';
 
 export function RepetitiveTodoToSingleTodo(
   {
@@ -8,9 +8,9 @@ export function RepetitiveTodoToSingleTodo(
     repeatingType,
     completedDates,
     sortIdxList,
-  }: RepetitiveTodo,
+  }: RepetitiveTask,
   date: Date
-): Todo {
+): Task {
   return {
     id,
     date,

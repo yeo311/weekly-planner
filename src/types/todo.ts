@@ -1,3 +1,5 @@
+import { Dayjs } from 'dayjs';
+
 export type RepeatingTypes =
   | 'single'
   | 'weekly'
@@ -5,7 +7,7 @@ export type RepeatingTypes =
   | 'weekdays'
   | 'monthly';
 
-export enum TodoColors {
+export enum TaskColors {
   Green = '#d5eecf',
   Yellow = '#f8f7af',
   Orange = '#ffcba3',
@@ -14,29 +16,29 @@ export enum TodoColors {
   Blue = '#cce9ff',
 }
 
-export type RepetitiveTodoDeleteTypes = 'only' | 'after' | 'all';
+export type RepetitiveTaskDeleteTypes = 'only' | 'after' | 'all';
 
-export interface Todo {
+export interface Task {
   id: string;
-  date: Date;
+  date: Dayjs;
   subject: string;
   isCompleted: boolean;
   repeatingType: RepeatingTypes;
-  color: TodoColors;
+  color: TaskColors;
   sortIdx: number;
 }
 
-export interface RepetitiveTodo {
+export interface RepetitiveTask {
   id: string;
   subject: string;
-  startDate: Date;
-  endDate: Date;
+  startDate: Dayjs;
+  endDate: Dayjs;
   repeatingType: RepeatingTypes;
   repeatingNumber: number;
   completedDates: number[];
   deletedDates: number[];
-  color: TodoColors;
+  color: TaskColors;
   sortIdxList: Record<string, number>;
 }
 
-export type TotalTodo = Partial<Todo> & Partial<RepetitiveTodo>;
+export type TotalTodo = Partial<Task> & Partial<RepetitiveTask>;

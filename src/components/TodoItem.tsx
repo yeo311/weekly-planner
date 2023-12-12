@@ -5,12 +5,12 @@ import {
   ListItemText,
 } from '@mui/material';
 import useTodo from '../hooks/useTodo';
-import { Todo, TodoColors } from '../types/todo';
+import { Task, TaskColors } from '../types/todo';
 import { useSetRecoilState } from 'recoil';
 import { dialogState } from '../recoil/modal';
 
 interface TodoItemProps {
-  todo: Todo;
+  todo: Task;
 }
 
 const TodoItem = ({ todo }: TodoItemProps) => {
@@ -33,7 +33,7 @@ const TodoItem = ({ todo }: TodoItemProps) => {
   };
 
   const labelId = `todo-item-label-${todo.id}`;
-  const todoColor = todo.color || TodoColors.Green;
+  const todoColor = todo.color || TaskColors.Green;
   return (
     <ListItem disablePadding>
       <ListItemButton

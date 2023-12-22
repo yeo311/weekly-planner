@@ -1,4 +1,6 @@
-import { RepetitiveTask, Task } from '../types/todo';
+// deprecated
+
+import { RepetitiveTask, Task } from '../types/task.types';
 
 export function RepetitiveTodoToSingleTodo(
   {

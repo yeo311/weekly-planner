@@ -3,6 +3,7 @@ import useAuth from '../hooks/useAuth';
 import { Divider, Loader } from '@mantine/core';
 import HeaderSection from '../sections/HeaderSection';
 import MainSection from '../sections/MainSection';
+import AddTaskSection from '../sections/AddTaskSection';
 
 const MainPage = () => {
   const auth = useAuth();
@@ -19,6 +20,7 @@ const MainPage = () => {
       <HeaderSection />
       <Divider color="gray.2" />
       <MainSection />
+      <AddTaskSection />
     </>
   );
 };

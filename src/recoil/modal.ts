@@ -1,5 +1,5 @@
 import { atom } from 'recoil';
-import { Task } from '../types/todo';
+import { Task } from '../types/task.types';
 
 export type DialogTypes = 'info' | 'delete' | 'edit';
 

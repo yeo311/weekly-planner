@@ -6,12 +6,14 @@ import LoginPage from './pages/LoginPage';
 import { RecoilURLSyncJSON } from 'recoil-sync';
 
 import '@mantine/core/styles.css';
+import '@mantine/dates/styles.css';
+import 'swiper/css';
 import { createTheme, MantineProvider } from '@mantine/core';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import SignUpPage from './pages/SignUpPage';
 import { AuthContextProvider } from './contexts/AuthContext';
-
-import 'swiper/css';
+import { DatesProvider } from '@mantine/dates';
+import 'dayjs/locale/ko';
 
 const router = createBrowserRouter([
   {
@@ -47,11 +49,13 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <RecoilRoot>
     <RecoilURLSyncJSON location={{ part: 'queryParams' }}>
       <MantineProvider theme={theme}>
-        <QueryClientProvider client={queryClient}>
-          <AuthContextProvider>
-            <RouterProvider router={router} />
-          </AuthContextProvider>
-        </QueryClientProvider>
+        <DatesProvider settings={{ locale: 'ko' }}>
+          <QueryClientProvider client={queryClient}>
+            <AuthContextProvider>
+              <RouterProvider router={router} />
+            </AuthContextProvider>
+          </QueryClientProvider>
+        </DatesProvider>
       </MantineProvider>
     </RecoilURLSyncJSON>
   </RecoilRoot>

@@ -18,7 +18,7 @@ import DeleteButton from '../buttons/DeleteButton';
 import MarginBox from '../MarginBox';
 import ColorLensOutlinedIcon from '@mui/icons-material/ColorLensOutlined';
 import { Circle } from '@mui/icons-material';
-import { TaskColors } from '../../types/todo';
+import { TaskColors } from '../../types/task.types';
 import { useEffect, useState } from 'react';
 import { updateTodoItem } from '../../firebase/update';
 import { userState } from '../../recoil/user';

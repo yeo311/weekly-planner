@@ -14,7 +14,7 @@ import DeleteButton from '../buttons/DeleteButton';
 import EditButton from '../buttons/EditButton';
 import ColorLensOutlinedIcon from '@mui/icons-material/ColorLensOutlined';
 import { Circle } from '@mui/icons-material';
-import { TaskColors } from '../../types/todo';
+import { TaskColors } from '../../types/task.types';
 import MarginBox from '../MarginBox';
 
 const StyledIconBox = styled.div`

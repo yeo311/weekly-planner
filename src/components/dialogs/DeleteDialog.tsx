@@ -14,7 +14,7 @@ import { useState } from 'react';
 import { useRecoilValue, useResetRecoilState } from 'recoil';
 import useTodo from '../../hooks/useTodo';
 import { dialogState } from '../../recoil/modal';
-import { RepetitiveTaskDeleteTypes } from '../../types/todo';
+import { RepetitiveTaskDeleteTypes } from '../../types/task.types';
 import MarginBox from '../MarginBox';
 
 const DeleteDialog = () => {

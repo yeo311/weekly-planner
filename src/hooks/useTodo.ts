@@ -1,7 +1,11 @@
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { userState } from '../recoil/user';
 import { todoListState } from '../recoil/todo';
-import { RepeatingTypes, RepetitiveTaskDeleteTypes, Task } from '../types/todo';
+import {
+  RepeatingTypes,
+  RepetitiveTaskDeleteTypes,
+  Task,
+} from '../types/task.types';
 import {
   getRepetitiveTodoById,
   getRepetitiveTodosByDateRange,

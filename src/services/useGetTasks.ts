@@ -3,7 +3,7 @@ import useAuth from '../hooks/useAuth';
 import { useWeekStore } from '../store/date';
 import useGetRepetitiveTaskQuery from '../queries/useGetRepetitiveTaskQuery';
 import { Dayjs } from 'dayjs';
-import { RepetitiveTask, Task } from '../types/todo';
+import { RepetitiveTask, Task } from '../types/task.types';
 import { formatKey, toUnix } from '../utils/date';
 
 const checkIfRepeatTodoAreIncludedInThisDate = (
@@ -41,7 +41,7 @@ const RepetitiveTodoToSingleTodo = (
   date,
   subject,
   color,
-  repeatingType,
+  repeatingType: repeatingType,
   isCompleted: completedDates.includes(toUnix(date)),
   sortIdx:
     sortIdxList && Object.keys(sortIdxList).includes(`${toUnix(date)}`)

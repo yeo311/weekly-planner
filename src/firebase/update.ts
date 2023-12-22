@@ -1,5 +1,5 @@
 import { arrayRemove, arrayUnion, doc, updateDoc } from 'firebase/firestore';
-import { TotalTodo } from '../types/todo';
+import { TotalTodo } from '../types/task.types';
 import { db } from './init';
 
 export function updateFirebaseTodoItem(

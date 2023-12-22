@@ -7,7 +7,7 @@ import {
   Timestamp,
   where,
 } from 'firebase/firestore';
-import { RepetitiveTask, Task } from '../types/todo';
+import { RepetitiveTask, Task } from '../types/task.types';
 import { db } from './init';
 import dayjs, { type Dayjs } from 'dayjs';
 

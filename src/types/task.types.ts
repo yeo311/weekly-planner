@@ -23,6 +23,7 @@ export interface Task {
   date: Dayjs;
   subject: string;
   isCompleted: boolean;
+  isRepeated?: false;
   repeatingType: RepeatingTypes;
   color: TaskColors;
   sortIdx: number;
@@ -32,13 +33,17 @@ export interface RepetitiveTask {
   id: string;
   subject: string;
   startDate: Dayjs;
+  isRepeated: true;
   endDate: Dayjs;
   repeatingType: RepeatingTypes;
   repeatingNumber: number;
   completedDates: number[];
   deletedDates: number[];
   color: TaskColors;
+  sortIdx: number;
   sortIdxList: Record<string, number>;
 }
 
 export type TotalTodo = Partial<Task> & Partial<RepetitiveTask>;
+
+export type UnionTask = Task | RepetitiveTask;

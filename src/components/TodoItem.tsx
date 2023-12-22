@@ -5,7 +5,7 @@ import {
   ListItemText,
 } from '@mui/material';
 import useTodo from '../hooks/useTodo';
-import { Task, TaskColors } from '../types/todo';
+import { Task, TaskColors } from '../types/task.types';
 import { useSetRecoilState } from 'recoil';
 import { dialogState } from '../recoil/modal';
 

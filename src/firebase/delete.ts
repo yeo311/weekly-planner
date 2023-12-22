@@ -6,7 +6,7 @@ import {
   Timestamp,
   updateDoc,
 } from 'firebase/firestore';
-import { RepetitiveTaskDeleteTypes, Task } from '../types/todo';
+import { RepetitiveTaskDeleteTypes, Task } from '../types/task.types';
 import { db } from './init';
 
 export function deleteFirebaseTodo(uid: string, todoId: string) {

@@ -1,5 +1,5 @@
 import { Container, Flex, Text } from '@mantine/core';
-import { Task } from '../types/todo';
+import { Task } from '../types/task.types';
 
 type TaskItemProps = {
   task: Task;

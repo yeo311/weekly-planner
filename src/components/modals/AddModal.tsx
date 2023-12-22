@@ -18,7 +18,7 @@ import useTodo from '../../hooks/useTodo';
 import { userState } from '../../recoil/user';
 import { addModalState } from '../../recoil/modal';
 import { addTodoItem } from '../../firebase/create';
-import { RepeatingTypes, TaskColors } from '../../types/todo';
+import { RepeatingTypes, TaskColors } from '../../types/task.types';
 import { dayArr } from '../../utils/date';
 import { MobileDatePicker } from '@mui/x-date-pickers';
 import MarginBox from '../MarginBox';

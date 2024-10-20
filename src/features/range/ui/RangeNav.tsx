@@ -44,5 +44,5 @@ const RangeNavContainer = styled.div`
 `;
 
 const RangeNavText = styled(Typography.Text)`
-  font-size: 1.2rem;
+  font-size: 1rem;
 `;

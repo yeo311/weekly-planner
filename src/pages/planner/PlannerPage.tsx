@@ -9,9 +9,7 @@ export const PlannerPage = () => {
     <Layout>
       <Header />
       <Content>
-        <div>
-          <WeekTasks />
-        </div>
+        <WeekTasks />
       </Content>
     </Layout>
   );
@@ -20,8 +18,11 @@ export const PlannerPage = () => {
 const Layout = styled.div`
   display: flex;
   flex-direction: column;
+  height: 100vh;
 `;
 
 const Content = styled.main`
   flex: 1;
+  display: flex;
+  flex-direction: column;
 `;

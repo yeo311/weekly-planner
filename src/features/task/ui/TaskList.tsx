@@ -1,6 +1,6 @@
-import { Dayjs } from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { GET_TASKS_QUERY_KEY, useGetTasks } from '../hooks/useGetTasks';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Button, Checkbox, Table } from 'antd';
 import { getWeekdayFormat } from '@/entities/tasks/model/weekday';
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
@@ -148,6 +148,15 @@ export const TaskList = ({ date }: { date: Dayjs }) => {
     }
   };
 
+  const isToday = date.isSame(dayjs(), 'day');
+  const isSunday = date.day() === 0;
+  const isSaturday = date.day() === 6;
+  const titleColor = isSunday
+    ? '#ff2424cf'
+    : isSaturday
+    ? '#2d2dffcc'
+    : undefined;
+
   return (
     <>
       <Container>
@@ -168,6 +177,8 @@ export const TaskList = ({ date }: { date: Dayjs }) => {
                   row: data?.length ? Row : undefined,
                 },
               }}
+              titleColor={titleColor}
+              titleHighlight={isToday}
               columns={[
                 {
                   title: `${date.format('MM/DD')} (${getWeekdayFormat(date)})`,
@@ -175,7 +186,8 @@ export const TaskList = ({ date }: { date: Dayjs }) => {
                   render: (_, record) => {
                     return (
                       <Item>
-                        <Checkbox
+                        <ColorfulCheckbox
+                          color={record.color}
                           checked={record.isCompleted}
                           onChange={(e) => {
                             handleCheckboxChange(record, e.target.checked);
@@ -187,9 +199,7 @@ export const TaskList = ({ date }: { date: Dayjs }) => {
                             setOpenAddTaskModal(true);
                           }}
                         >
-                          <ItemText color={record.color}>
-                            {record.subject}
-                          </ItemText>
+                          <span>{record.subject}</span>
                         </ItemClickableArea>
                       </Item>
                     );
@@ -230,10 +240,31 @@ const Container = styled.div`
   touch-action: none;
 `;
 
-const ListTable = styled(Table<TotalTask>)`
+const ListTable = styled(Table<TotalTask>)<{
+  titleColor?: string;
+  titleHighlight?: boolean;
+}>`
   .ant-table-footer {
     background: transparent;
   }
+  .ant-table-thead > tr > th {
+    text-align: center;
+    color: ${({ titleColor }) => titleColor ?? 'inherit'};
+  }
+  ${({ titleHighlight }) =>
+    titleHighlight &&
+    css`
+      .ant-table-thead > tr > th::after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 6px;
+        bottom: 30%;
+        background-color: #2bfbffad;
+      }
+    `}
 `;
 
 const Item = styled.div`
@@ -242,14 +273,17 @@ const Item = styled.div`
   gap: 8px;
 `;
 
-const ItemText = styled.span<{ color?: TaskColors }>`
-  background: linear-gradient(
-    transparent,
-    70%,
-    ${({ color }) => color ?? 'transparent'} 30%
-  );
-`;
-
 const ItemClickableArea = styled.div`
   flex: 1;
+`;
+
+const ColorfulCheckbox = styled(Checkbox)<{
+  color?: TaskColors;
+  checked?: boolean;
+}>`
+  .ant-checkbox-inner {
+    background-color: ${({ color, checked }) =>
+      !checked ? color : 'lightgray'};
+    border-color: ${({ color, checked }) => (!checked ? color : 'lightgray')};
+  }
 `;

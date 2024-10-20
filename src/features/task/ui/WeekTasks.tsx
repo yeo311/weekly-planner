@@ -20,4 +20,9 @@ const Container = styled.section`
   padding: 10px;
   width: 100%;
   justify-content: space-between;
+  flex: 1;
+
+  & > div:not(:last-child) {
+    border-right: 1px solid #f0f0f0;
+  }
 `;

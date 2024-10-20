@@ -1,7 +1,7 @@
 import { Button, Flex, Form, Input, message, Typography } from 'antd';
 import { LockOutlined, MailOutlined } from '@ant-design/icons';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../firebase/init';
+import { auth } from '../../firebase/init';
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 
@@ -10,7 +10,7 @@ type FieldType = {
   password?: string;
 };
 
-export default function Login() {
+export default function LoginPage() {
   const navigate = useNavigate();
   const { mutate, isPending } = useMutation({
     mutationFn: ({ email, password }: { email: string; password: string }) => {

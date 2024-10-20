@@ -194,6 +194,7 @@ export const TaskList = ({ date }: { date: Dayjs }) => {
                           }}
                         />
                         <ItemClickableArea
+                          checked={record.isCompleted}
                           onClick={() => {
                             setSelectedTask(record);
                             setOpenAddTaskModal(true);
@@ -262,7 +263,7 @@ const ListTable = styled(Table<TotalTask>)<{
         width: 60px;
         height: 6px;
         bottom: 30%;
-        background-color: #2bfbffad;
+        background-color: #feff00a6;
       }
     `}
 `;
@@ -273,8 +274,13 @@ const Item = styled.div`
   gap: 8px;
 `;
 
-const ItemClickableArea = styled.div`
+const ItemClickableArea = styled.div<{ checked?: boolean }>`
   flex: 1;
+  ${({ checked }) =>
+    checked &&
+    css`
+      color: rgba(0, 0, 0, 0.25);
+    `}
 `;
 
 const ColorfulCheckbox = styled(Checkbox)<{

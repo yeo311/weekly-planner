@@ -289,7 +289,8 @@ const ColorfulCheckbox = styled(Checkbox)<{
 }>`
   .ant-checkbox-inner {
     background-color: ${({ color, checked }) =>
-      !checked ? color : 'lightgray'};
-    border-color: ${({ color, checked }) => (!checked ? color : 'lightgray')};
+      !checked ? color : 'lightgray'} !important;
+    border-color: ${({ color, checked }) =>
+      !checked ? color : 'lightgray'} !important;
   }
 `;

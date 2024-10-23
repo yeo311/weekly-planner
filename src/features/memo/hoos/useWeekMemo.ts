@@ -19,6 +19,7 @@ export const useWeekMemo = (date: Dayjs) => {
     enabled: !!uid,
   });
   const [memo, setMemo] = useState('');
+  const [isShow, setIsShow] = useState(false);
 
   const { mutate: writeMemo } = useMutation({
     mutationFn: async (memo: string) => {
@@ -46,5 +47,7 @@ export const useWeekMemo = (date: Dayjs) => {
     memo,
     setMemo,
     isLoading,
+    isShow,
+    setIsShow,
   };
 };

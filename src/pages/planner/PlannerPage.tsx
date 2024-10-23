@@ -11,9 +11,7 @@ export const PlannerPage = () => {
       <Content>
         <WeekTasks />
       </Content>
-      <MemoSection>
-        <MemoArea />
-      </MemoSection>
+      <MemoArea />
     </Layout>
   );
 };
@@ -29,12 +27,4 @@ const Content = styled.main`
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-`;
-
-const MemoSection = styled.section`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  border-top: 1px solid #f0f0f0;
-  padding: 10px;
 `;

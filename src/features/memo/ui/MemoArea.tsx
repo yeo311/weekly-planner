@@ -1,6 +1,6 @@
 import { useRange } from '@/features/range';
 import { SaveOutlined, RedoOutlined } from '@ant-design/icons';
-import { FloatButton, Input, Spin } from 'antd';
+import { FloatButton, Input, Spin, Typography } from 'antd';
 import styled from 'styled-components';
 import { useWeekMemo } from '../hoos/useWeekMemo';
 
@@ -11,6 +11,7 @@ export const MemoArea = () => {
 
   return (
     <Container>
+      <Title>Memo</Title>
       <Spin spinning={isLoading}>
         <TextArea
           placeholder="메모를 입력하세요."
@@ -46,4 +47,9 @@ const Container = styled.div`
   .ant-spin-container {
     height: 100%;
   }
+`;
+
+const Title = styled(Typography.Text)`
+  font-size: 16px;
+  margin-bottom: 12px;
 `;

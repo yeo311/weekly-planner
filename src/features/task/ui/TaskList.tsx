@@ -51,7 +51,6 @@ const Row = (props: RowProps) => {
     transform: CSS.Translate.toString(transform),
     transition,
     cursor: 'pointer',
-    touchAction: 'none',
     ...(isDragging ? { position: 'relative', zIndex: 9999 } : {}),
   };
 
@@ -238,7 +237,6 @@ export const TaskList = ({ date }: { date: Dayjs }) => {
 
 const Container = styled.div`
   width: 100%;
-  touch-action: none;
 `;
 
 const ListTable = styled(Table<TotalTask>)<{
@@ -272,6 +270,7 @@ const Item = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
+  touch-action: none;
 `;
 
 const ItemClickableArea = styled.div<{ checked?: boolean }>`

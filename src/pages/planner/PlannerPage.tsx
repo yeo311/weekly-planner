@@ -28,10 +28,11 @@ const Content = styled.main`
   flex: 2;
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
 `;
 
 const MemoSection = styled.section`
-  flex: 1 1 0;
+  flex: 1;
   display: flex;
   flex-direction: column;
   border-top: 1px solid #f0f0f0;

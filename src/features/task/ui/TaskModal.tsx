@@ -2,6 +2,7 @@ import {
   createTaskItem,
   deleteRepetitiveTaskItem,
   deleteTaskItem,
+  RepetitiveTaskDeleteTypes,
   TaskColors,
   TotalTask,
   updateTaskItem,
@@ -17,7 +18,6 @@ import { userState } from '@/shared';
 import { useAtomValue } from 'jotai';
 import { GET_TASKS_QUERY_KEY } from '../hooks/useGetTasks';
 import { useEffect, useState } from 'react';
-import { RepetitiveTodoDeleteTypes } from '@/types/todo';
 
 const addTaskSchema = z.object({
   subject: z
@@ -64,7 +64,7 @@ export const TaskModal = ({
     },
   });
   const [repetitiveTodoDeleteType, setRepetitiveTodoDeleteType] =
-    useState<RepetitiveTodoDeleteTypes>('only');
+    useState<RepetitiveTaskDeleteTypes>('only');
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const uid = useAtomValue(userState);
   const queryClient = useQueryClient();
@@ -118,7 +118,7 @@ export const TaskModal = ({
         repetitiveTodoDeleteType,
       }: {
         task: TotalTask;
-        repetitiveTodoDeleteType: RepetitiveTodoDeleteTypes;
+        repetitiveTodoDeleteType: RepetitiveTaskDeleteTypes;
       }) => deleteRepetitiveTaskItem(uid, task, repetitiveTodoDeleteType),
       onSuccess: () => {
         queryClient.invalidateQueries({
